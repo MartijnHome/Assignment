@@ -7,6 +7,7 @@
                 Welcome!
             {% endblock %}
         </title>
+        <script src="https://cdn.tailwindcss.com"></script>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -18,11 +19,55 @@
         {% endblock %}
     </head>
 
-    <body class="h-screen bg-gradient-to-b from-green-200 to-green-500">
-        {% block body %}
-            <h1 class="text-3xl font-bold underline">
-                Hello world!
-            </h1>
-        {% endblock %}
+    <body>
+        <div class="flex flex-col h-screen ">
+            <div class="w-8/12 mx-auto flex">
+                <img class="w-48 h-32"
+                     src="img/blogicon.jpg">
+                <h1 class="my-auto tracking-widest text-2xl font-bold">
+                    De  blogsite
+                </h1>
+                <h1 class="my-auto tracking-widest text-3xl font-bold animate-bounce">!!!</h1>
+            </div>
+
+            <main class="mb-auto bg-slate-200 border-b-2">
+                <header class="sticky top-0 w-screen bg-black shadow-2xl border-amber-600 border-t-4">
+                    <div class="flex w-8/12 mx-auto my-auto">
+                            <a href="/"
+                               {% if app.request.get('_route') == 'app_blogsite_home' %}
+                                   class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
+                               {% endif %}
+                               class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
+                                HOME
+                            </a>
+                            <a href="/about"
+                               {% if app.request.get('_route') == 'app_blogsite_about' %}
+                                   class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
+                               {% endif %}
+                               class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
+                                ABOUT US
+                            </a>
+                    </div>
+                </header>
+
+                <div class="w-8/12 bg-white mx-auto h-full shadow-xl px-4 text-gray-800">
+                    {% set current_path = app.request.get('_route') %}
+                    {{ current_path }}
+                    {% block content %} {% endblock %}
+                </div>
+            </main>
+
+            <footer class="fixed bottom-0 w-screen bg-amber-600">
+                <div class="mx-auto flex w-8/12">
+                    <div class="flex-auto">
+                    </div>
+                    <div class="flex-none my-auto">
+                        <p class="text-white ">
+                            Made by M. van Sliedregt - 2022 ©
+                        </p>
+                    </div>
+                </div>
+            </footer>
+        </div>
     </body>
 </html>

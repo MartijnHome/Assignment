@@ -2,11 +2,10 @@ controllers:
     resource: ../src/Controller/
     type: attribute
 
-# the "app_lucky_number" route name is not important yet
-app_lucky_number:
-    path: /lucky/number
-    controller: App\Controller\LuckyController::number
-
-app_blogsite:
+app_blogsite_home:
     path: /
     controller: App\Controller\HomeController::index
+
+app_blogsite_about:
+    path: /about
+    controller: App\Controller\HomeController::about
