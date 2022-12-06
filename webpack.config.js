@@ -33,7 +33,6 @@ Encore
     .enableSingleRuntimeChunk()
 
     .enablePostCssLoader()
-    .enableVueLoader()
     /*
      * FEATURE CONFIG
      *

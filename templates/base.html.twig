@@ -20,9 +20,9 @@
     </head>
 
     <body>
-        <div class="flex flex-col h-screen ">
+        <div class="h-full ">
             <div class="w-8/12 mx-auto flex">
-                <img class="w-48 h-32"
+                <img class="w-48 h-32 my-4"
                      src="img/blogicon.jpg">
                 <h1 class="my-auto tracking-widest text-2xl font-bold">
                     De  blogsite
@@ -30,30 +30,62 @@
                 <h1 class="my-auto tracking-widest text-3xl font-bold animate-bounce">!!!</h1>
             </div>
 
-            <main class="mb-auto bg-slate-200 border-b-2">
-                <header class="sticky top-0 w-screen bg-black shadow-2xl border-amber-600 border-t-4">
-                    <div class="flex w-8/12 mx-auto my-auto">
+            <main class="mb-auto bg-slate-300 ">
+                <header class="sticky top-0  w-screen bg-black shadow-2xl border-amber-600 border-t-4">
+                    <div class="flex h-auto w-8/12 mx-auto shadow-2xl">
+                        <div class="flex-none my-2">
                             <a href="/"
-                               {% if app.request.get('_route') == 'app_blogsite_home' %}
-                                   class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
-                               {% endif %}
+                                    {% if app.request.get('_route') == 'app_blogsite_home' %}
+                                        class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
+                                    {% endif %}
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
                                 HOME
                             </a>
                             <a href="/about"
-                               {% if app.request.get('_route') == 'app_blogsite_about' %}
-                                   class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
-                               {% endif %}
+                                    {% if app.request.get('_route') == 'app_blogsite_about' %}
+                                        class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
+                                    {% endif %}
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
-                                ABOUT US
+                                ABOUT
                             </a>
+                            <a href="/blogs"
+                                    {% if app.request.get('_route') == 'app_blogsite_blogs' %}
+                                        class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
+                                    {% endif %}
+                               class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
+                                BLOGS
+                            </a>
+                        </div>
+                        <div class="flex-auto">
+                        </div>
+                        <div class="flex-none my-2">
+
+                            {% if app.user is null %}
+                                <a href="/login"
+                                        {% if app.request.get('_route') == 'app_login' %}
+                                            class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
+                                        {% endif %}
+                                   class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
+                                    LOG IN
+                                </a>
+                            {% else %}
+                                <a href="/logout"
+                                        {% if app.request.get('_route') == 'app_logout' %}
+                                            class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
+                                        {% endif %}
+                                   class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
+                                    LOG OUT
+                                </a>
+                            {% endif %}
+                        </div>
+
+
                     </div>
                 </header>
 
-                <div class="w-8/12 bg-white mx-auto h-full shadow-xl px-4 text-gray-800">
-                    {% set current_path = app.request.get('_route') %}
-                    {{ current_path }}
-                    {% block content %} {% endblock %}
+                <div class="w-8/12 bg-white mx-auto my-8 rounded-xl shadow-xl px-16 py-16 text-sm text-gray-800 ">
+                    {% block content %}
+                    {% endblock %}
                 </div>
             </main>
 
