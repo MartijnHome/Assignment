@@ -12,16 +12,13 @@
     <h1 class="text-xl my-2">Log in</h1>
 
     <p class="my-2">
-        Please log in or register if you don't have an account.
+        Please log in using your blogsite account.
     </p>
 
-    <p class="my-2">
-        <a href="/register">
-            Register me!
-        </a>
-    </p>
-
-    <form action="{{ path('app_login') }}" method="post">
+    <form action="{{ path('app_login') }}"
+          method="post"
+          class="my-2"
+    >
         <label for="username">Email:</label>
         <input type="text" id="username" name="_username" value="{{ last_username }}">
 
@@ -33,4 +30,10 @@
 
         <button type="submit">login</button>
     </form>
+
+    <button class="text-white bg-amber-600 rounded-full p-2">
+        <a href="/register">
+            Create an account
+        </a>
+    </button>
 {% endblock %}

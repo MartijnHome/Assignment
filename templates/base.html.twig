@@ -19,18 +19,19 @@
         {% endblock %}
     </head>
 
-    <body>
-        <div class="h-full ">
-            <div class="w-8/12 mx-auto flex">
+    <body class="bg-slate-300">
+        <div class="h-full">
+            <div class="bg-white">
+            <div class=" w-8/12 mx-auto flex">
                 <img class="w-48 h-32 my-4"
-                     src="img/blogicon.jpg">
+                     src="{{ absolute_url(asset('img/blogicon.jpg')) }} ">
                 <h1 class="my-auto tracking-widest text-2xl font-bold">
                     De  blogsite
                 </h1>
                 <h1 class="my-auto tracking-widest text-3xl font-bold animate-bounce">!!!</h1>
             </div>
-
-            <main class="mb-auto bg-slate-300 ">
+            </div>
+            <main class="mb-auto  ">
                 <header class="sticky top-0  w-screen bg-black shadow-2xl border-amber-600 border-t-4">
                     <div class="flex h-auto w-8/12 mx-auto shadow-2xl">
                         <div class="flex-none my-2">
@@ -48,12 +49,19 @@
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
                                 ABOUT
                             </a>
-                            <a href="/blogs"
+                            <a href="/blog"
                                     {% if app.request.get('_route') == 'app_blogsite_blogs' %}
                                         class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
                                     {% endif %}
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
                                 BLOGS
+                            </a>
+                            <a href="/commentary"
+                                    {% if app.request.get('_route') == 'app_blogsite_commentaries' %}
+                                        class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
+                                    {% endif %}
+                               class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
+                                COMMENTARIES
                             </a>
                         </div>
                         <div class="flex-auto">
@@ -69,6 +77,13 @@
                                     LOG IN
                                 </a>
                             {% else %}
+                                <a href="/account"
+                                        {% if app.request.get('_route') == 'app_account' %}
+                                            class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
+                                        {% endif %}
+                                   class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
+                                    ACCOUNT
+                                </a>
                                 <a href="/logout"
                                         {% if app.request.get('_route') == 'app_logout' %}
                                             class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
