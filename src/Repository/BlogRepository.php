@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Blog;
 use App\Entity\User;
+use App\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -57,4 +58,16 @@ class BlogRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findLatest(int $page = 1): Paginator
+    {
+        $qb = $this->createQueryBuilder('blog')
+            ->orderBy('blog.publish_date', 'DESC')
+            ->where('blog.archived = false')
+        ;
+
+
+        return (new Paginator($qb))->paginate($page);
+    }
+
 }

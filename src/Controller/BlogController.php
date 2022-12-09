@@ -48,6 +48,14 @@ class BlogController extends AbstractController
         ]);
     }
 
+    #[Route('/page/{page<[1-9]\d*>}', name: 'app_blog_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
+    public function paginated(BlogRepository $blogRepository, int $page): Response
+    {
+        return $this->render('blog/index.html.twig', [
+            'paginator' => $blogRepository->findLatest($page),
+        ]);
+    }
+
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, MailManager $mailManager): Response
@@ -92,7 +100,7 @@ class BlogController extends AbstractController
             $blogRepository->save($blog, true);
             $mailManager->blogPublished($blog);
 
-            return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('blog/new.html.twig', [
