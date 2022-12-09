@@ -44,7 +44,7 @@ class BlogController extends AbstractController
     public function index(BlogRepository $blogRepository): Response
     {
         return $this->render('blog/index.html.twig', [
-            'blogs' => $blogRepository->findAll(),
+            'blogs' => $blogRepository->getPublished(),
         ]);
     }
 
@@ -84,6 +84,9 @@ class BlogController extends AbstractController
                 }
                 $blog->setAdditionalImages(implode(";", $files));
             }
+
+            //Set archived is false
+            $blog->setArchived(false);
 
             //Save and email user
             $blogRepository->save($blog, true);
@@ -142,6 +145,16 @@ class BlogController extends AbstractController
             'blog' => $blog,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/archive', name: 'app_blog_archive', methods: ['GET', 'POST'])]
+    #[IsGranted('IS_AUTHENTICATED')]
+    public function archive(Request $request, Blog $blog, BlogRepository $blogRepository): Response
+    {
+        $blog->setArchived(!$blog->isArchived());
+        $blogRepository->save($blog, true);
+        $route = $request->headers->get('referer');
+        return $this->redirect($route);
     }
 
     #[Route('/{id}/delete', name: 'app_blog_delete', methods: ['POST'])]

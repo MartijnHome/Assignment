@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\BlogRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,19 +38,20 @@ class LoginController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function logout()
     {
-        // controller can be blank: it will never be called!
-        throw new \Exception('Don\'t forget to activate logout in security.yaml');
+        throw new Exception('This will never throw');
     }
 
     #[Route('/account', name: 'app_account')]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function accountPage(): Response
+    public function accountPage(BlogRepository $blogRepository): Response
     {
         $user = $this->security->getUser();
+
         return $this->render('blogsite/account.html.twig', [
             'name' => $user->getName(),
             'blogs' => $user->getBlogs(),
             'commentaries' => $user->getCommentaries(),
         ]);
     }
+
 }

@@ -8,7 +8,7 @@
     </h1>
 
     <h2 class="text-xl mb-10">
-        Your Blogs
+        Your published blogs
     </h2>
 
     <table class="w-full table-fixed border-2 border-black shadow-2xl mb-2">
@@ -37,6 +37,17 @@
                     >
                         <button class="bg-sky-800 text-white p-2 rounded-xl m-2">
                             Edit
+                        </button>
+                    </a>
+                    <a href="{{ path('app_blog_archive', {'id': blog.id}) }}"
+                       class="hover:text-amber-600"
+                    >
+                        <button class="bg-sky-800 text-white p-2 rounded-xl m-2">
+                            {% if blog.archived %}
+                                Republish
+                            {% else %}
+                                Archive
+                            {% endif %}
                         </button>
                     </a>
                     <form method="post"

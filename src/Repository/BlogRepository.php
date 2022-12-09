@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Blog;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -46,5 +47,14 @@ class BlogRepository extends ServiceEntityRepository
                     ->setMaxResults(5)
                     ->getQuery()
                     ->getResult();
+    }
+
+    public function getPublished(): array
+    {
+        return $this->createQueryBuilder('blog')
+            ->orderBy('blog.publish_date', 'DESC')
+            ->where('blog.archived = false')
+            ->getQuery()
+            ->getResult();
     }
 }

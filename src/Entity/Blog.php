@@ -49,6 +49,9 @@ class Blog
     #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Commentary::class, orphanRemoval: true)]
     private Collection $commentaries;
 
+    #[ORM\Column]
+    private ?bool $archived = null;
+
     public function __construct()
     {
         $this->commentaries = new ArrayCollection();
@@ -175,5 +178,17 @@ class Blog
 
     public function __toString() {
         return $this->title;
+    }
+
+    public function isArchived(): ?bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(bool $archived): self
+    {
+        $this->archived = $archived;
+
+        return $this;
     }
 }

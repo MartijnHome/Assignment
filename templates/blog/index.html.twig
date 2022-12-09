@@ -3,7 +3,7 @@
 {% block title %}Blog index{% endblock %}
 
 {% block content %}
-    <h1 class="text-2xl">
+    <h1 class="text-2xl mb-10">
         Blog index
     </h1>
 
@@ -33,6 +33,4 @@
     {% else %}
         <p>No blogs found</p>
     {% endfor %}
-
-    <a href="{{ path('app_blog_new') }}">Create new</a>
 {% endblock %}
