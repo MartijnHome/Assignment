@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/commentary')]
 class CommentaryController extends AbstractController
 {
+    /*
     #[Route('/', name: 'app_commentary_index', methods: ['GET'])]
     public function index(CommentaryRepository $commentaryRepository): Response
     {
@@ -49,23 +50,25 @@ class CommentaryController extends AbstractController
             'commentary' => $commentary,
         ]);
     }
-
+*/
     #[Route('/{id}/edit', name: 'app_commentary_edit', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function edit(Request $request, Commentary $commentary, CommentaryRepository $commentaryRepository): Response
     {
+        $route = $request->headers->get('referer');
+
         $form = $this->createForm(CommentaryType::class, $commentary);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $commentaryRepository->save($commentary, true);
-
-            return $this->redirectToRoute('app_commentary_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirect($route);
         }
 
         return $this->renderForm('commentary/edit.html.twig', [
             'commentary' => $commentary,
             'form' => $form,
+            'route' => $route,
         ]);
     }
 
@@ -76,7 +79,7 @@ class CommentaryController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$commentary->getId(), $request->request->get('_token'))) {
             $commentaryRepository->remove($commentary, true);
         }
-
-        return $this->redirectToRoute('app_commentary_index', [], Response::HTTP_SEE_OTHER);
+        $route = $request->headers->get('referer');
+        return $this->redirect($route);
     }
 }

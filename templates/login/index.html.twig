@@ -19,6 +19,7 @@
           method="post"
           class="my-2"
     >
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
         <label for="username">Email:</label>
         <input type="text" id="username" name="_username" value="{{ last_username }}">
 

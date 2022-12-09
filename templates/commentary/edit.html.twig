@@ -7,7 +7,7 @@
 
     {{ include('commentary/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_commentary_index') }}">back to list</a>
+    <a href="{{ route }}">back to list</a>
 
     {{ include('commentary/_delete_form.html.twig') }}
 {% endblock %}

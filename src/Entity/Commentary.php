@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CommentaryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentaryRepository::class)]
 class Commentary
@@ -21,6 +22,8 @@ class Commentary
     #[ORM\JoinColumn(nullable: false)]
     private ?Blog $blog = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3)]
     #[ORM\Column(length: 255)]
     private ?string $text = null;
 
