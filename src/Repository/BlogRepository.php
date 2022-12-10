@@ -59,6 +59,19 @@ class BlogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getFiveMostCommented(): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT b.id, b.title, COUNT(c.id) as num_comments
+            FROM App\Entity\Blog b
+            JOIN b.commentaries c
+            GROUP BY b.id
+            ORDER BY num_comments DESC
+         ');
+        return $query->setMaxResults(5)->getResult();
+
+    }
+
     public function findLatest(int $page = 1): Paginator
     {
         $qb = $this->createQueryBuilder('blog')

@@ -31,8 +31,8 @@
             </div>
             <main class="mb-auto  ">
                 <header class="sticky top-0  w-screen bg-black shadow-2xl border-amber-600 border-t-4">
-                    <div class="flex h-auto w-8/12 mx-auto shadow-2xl">
-                        <div class="flex-none my-2">
+                    <div class="flex h-auto w-8/12 mx-auto shadow-2xl ">
+                        <div class="flex-none my-2 z-50">
                             <a href="/"
                                     {% if app.request.get('_route') == 'app_blogsite_home' %}
                                         class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
@@ -53,13 +53,6 @@
                                     {% endif %}
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
                                 BLOGS
-                            </a>
-                            <a href="/commentary"
-                                    {% if app.request.get('_route') == 'app_blogsite_commentaries' %}
-                                        class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
-                                    {% endif %}
-                               class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
-                                COMMENTARIES
                             </a>
                         </div>
                         <div class="flex-auto">

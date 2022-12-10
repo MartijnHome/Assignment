@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Blog;
 use App\Entity\Commentary;
 use App\Entity\User;
+use App\Form\BlogEditType;
 use App\Form\BlogType;
 use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
@@ -76,10 +77,8 @@ class BlogController extends AbstractController
 
             //Upload main image
             $mainImage = $form->get('main_image')->getData();
-            if ($mainImage) {
-                $file = $fileManager->upload($mainImage, $this->getParameter('blogimage_directory'));
-                $blog->setMainImage($file);
-            }
+            $file = $fileManager->upload($mainImage, $this->getParameter('blogimage_directory'));
+            $blog->setMainImage($file);
 
             //Upload additional images
             $additionalImages = $form->get('additional_images')->getData();
@@ -120,6 +119,7 @@ class BlogController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            //Get method is public, but for post method check if user is authenticated
             $this->denyAccessUnlessGranted('ROLE_USER');
             $commentary->setBlog($blog);
             $commentary->setUser($this->security->getUser());
@@ -132,25 +132,62 @@ class BlogController extends AbstractController
             'commentaries' => $blog->getCommentaries(),
             'commentary_form' => $form->createView(),
             'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
+            'route' => $request->headers->get('referer'),
         ]);
     }
 
 
-    #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_blog_edit', defaults: ['image' => -1], methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit/{image}', name: 'app_blog_edit_image', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function edit(Request $request, Blog $blog, BlogRepository $blogRepository): Response
+    public function edit(Request $request, Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, int $image): Response
     {
-        $form = $this->createForm(BlogType::class, $blog);
+        $form = $this->createForm(BlogType::class, $blog, [
+            'main_image_required' => false,
+            'main_image_label' => "Optional - Replace main image",
+            'additional_images_label' => "Optional - Add additional images"
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $blogRepository->save($blog, true);
+            $mainImage = $form->get('main_image')->getData();
+            if ($mainImage) {
+                //Delete old one first
+                $fileManager->delete($blog->getMainImage(), $this->getParameter('blogimage_directory'));
+                $file = $fileManager->upload($mainImage, $this->getParameter('blogimage_directory'));
+                $blog->setMainImage($file);
+            }
 
-            return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+            //Upload additional images
+            $additionalImages = $form->get('additional_images')->getData();
+            if ($additionalImages) {
+                $files = explode(";", $blog->getAdditionalImages());
+                foreach ($additionalImages as $image)
+                {
+                    $file = $fileManager->upload($image, $this->getParameter('blogimage_directory'));
+                    $files[] = $file;
+                }
+                $blog->setAdditionalImages(implode(";", $files));
+            }
+
+
+            $blogRepository->save($blog, true);
+            return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
+        }
+
+
+        if ($image >= 0) {
+            //User requests additional image to be removed
+            $images = explode(";", $blog->getAdditionalImages());
+            $fileManager->delete($images[$image], $this->getParameter('blogimage_directory'));
+            array_splice($images, $image, 1);
+            $blog->setAdditionalImages(implode(";", $images));
+            $blogRepository->save($blog, true);
         }
 
         return $this->renderForm('blog/edit.html.twig', [
             'blog' => $blog,
+            'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
             'form' => $form,
         ]);
     }

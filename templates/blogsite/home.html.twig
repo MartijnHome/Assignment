@@ -36,26 +36,50 @@
         </div>
         <div class="lg:ml-8 lg:flex-none lg:w-1/4">
             <div class="mb-10">
-                <h1 class="text-xl text-white bg-amber-600">
+                <h1 class="pl-4 text-xl text-white bg-amber-600">
                     Five latest blogs
                 </h1>
                 <ol class="list-decimal list-inside">
                     {% for blog in latest_five %}
-                        <li>{{ blog.title }}</li>
+                        <a href="{{ path('app_blog_show', {'id': blog.id}) }}"
+                           class="hover:text-amber-600"
+                        >
+                            <li>{{ blog.title }}</li>
+                        </a>
                     {% else %}
                         <li>No recent blogs posted</li>
                     {% endfor %}
                 </ol>
             </div>
             <div class="mb-10">
-                <h1 class="text-xl text-white bg-amber-600">
+                <h1 class="pl-4 text-xl text-white bg-amber-600">
                     Five latest comments
                 </h1>
                 <ol class="list-decimal list-inside">
                     {% for commentary in commentaries %}
-                        <li>{{ commentary.text }}</li>
+                        <a href="{{ path('app_blog_show', {'id': commentary.blog.id}) }}"
+                           class="hover:text-amber-600"
+                        >
+                            <li>{{ commentary.text }}</li>
+                        </a>
                     {% else %}
                         <li>No commentaries found</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <div class="mb-10">
+                <h1 class="pl-4 text-xl text-white bg-amber-600">
+                    Top five commented blogs
+                </h1>
+                <ol class="list-decimal list-inside">
+                    {% for blog in top_commented %}
+                        <a href="{{ path('app_blog_show', {'id': blog.id}) }}"
+                           class="hover:text-amber-600"
+                        >
+                            <li>{{ blog.title }}</li>
+                        </a>
+                    {% else %}
+                        <li>No recent blogs posted</li>
                     {% endfor %}
                 </ol>
             </div>

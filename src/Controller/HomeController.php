@@ -14,6 +14,7 @@ class HomeController extends AbstractController
         return $this->render('blogsite/home.html.twig', [
             'latest_five' => $blogRepository->getLatestFive(),
             'commentaries' => $commentaryRepository->getLatestFive(),
+            'top_commented' => $blogRepository->getFiveMostCommented(),
         ]);
     }
 

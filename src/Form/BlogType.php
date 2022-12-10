@@ -20,9 +20,9 @@ class BlogType extends AbstractType
             ->add('subtitle')
             ->add('text')
             ->add('main_image', FileType::class, [
-                'label' => 'Main image (banner)',
+                'label' => $options['main_image_label'],
                 'mapped' => false,
-                'required' => false,
+                'required' => $options['main_image_required'],
                 'constraints' => [
                     new File([
                         'maxSize' => '1024k',
@@ -34,7 +34,7 @@ class BlogType extends AbstractType
                 ],
             ])
             ->add('additional_images', FileType::class, [
-                'label' => 'Additional images',
+                'label' => $options['additional_images_label'],
                 'mapped' => false,
                 'required' => false,
                 'multiple' => true,
@@ -56,6 +56,9 @@ class BlogType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Blog::class,
+            'main_image_required' => true,
+            'main_image_label' => "Main image (banner)",
+            'additional_images_label' => "Additional images"
         ]);
     }
 }

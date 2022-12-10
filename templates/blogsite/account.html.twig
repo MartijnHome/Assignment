@@ -7,6 +7,14 @@
         Welcome {{ name }}
     </h1>
 
+    <a href="{{ path('app_blog_new') }}"
+       class="hover:text-amber-200"
+    >
+        <button class="bg-amber-600 text-white p-2 rounded-full m-2 mb-10">
+            Create new blog
+        </button>
+    </a>
+
     <h2 class="text-xl mb-10">
         Your blogs
     </h2>
@@ -70,13 +78,6 @@
         </tr>
     {% endfor %}
     </table>
-    <a href="{{ path('app_blog_new') }}"
-       class="hover:text-amber-200"
-    >
-        <button class="bg-amber-600 text-white p-2 rounded-full m-2 mb-10">
-            Create new blog
-        </button>
-    </a>
 
     <h2 class="text-xl">
         Your Comments

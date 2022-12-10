@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\BlogRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -31,7 +32,6 @@ class Blog
     #[ORM\Column(length: 255)]
     private ?string $subtitle = null;
 
-    #[Assert\DateTime]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $publish_date = null;
 
@@ -98,12 +98,12 @@ class Blog
         return $this;
     }
 
-    public function getPublishDate(): ?\DateTimeInterface
+    public function getPublishDate(): ?DateTimeInterface
     {
         return $this->publish_date;
     }
 
-    public function setPublishDate(\DateTimeInterface $publish_date): self
+    public function setPublishDate(DateTimeInterface $publish_date): self
     {
         $this->publish_date = $publish_date;
 

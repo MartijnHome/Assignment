@@ -9,10 +9,10 @@
 
     {% for blog in paginator.results %}
         <a href="{{ path('app_blog_show', {'id': blog.id}) }}"
-           class="hover:text-amber-600"
+           class="hover:text-amber-600 "
         >
-            <div class="mb-32">
-                <img class="h-80 w-full rounded-2xl rounded-2xl"
+            <div class="mb-16">
+                <img class="h-64 w-full rounded-2xl rounded-2xl"
                      src="{{ asset('uploads/blog/image/' ~ blog.getMainImage()) }}"
                 >
 
@@ -35,28 +35,45 @@
     {% endfor %}
 
     {% if paginator.hasToPaginate %}
-        <div class="navigation text-center">
-            <ul class="pagination">
-                {% if paginator.hasPreviousPage %}
-                    <li class="prev"><a href="{{ path('app_blog_paginated', {page: paginator.previousPage}) }}" rel="previous"><i class="fa fw fa-long-arrow-left"></i> {{ 'paginator.previous'|trans }}</a></li>
-                {% else %}
-                    <li class="prev disabled"><span><i class="fa fw fa-arrow-left"></i> {{ 'paginator.previous'|trans }}</span></li>
-                {% endif %}
+        <div class="mx-auto flex justify-center text-xl gap-x-4 text-slate-600">
+            {% if paginator.hasPreviousPage %}
+                <a href="{{ path('app_blog_paginated', {page: paginator.previousPage}) }}"
+                >
+                    <img class="w-8 h-8 -scale-x-100"
+                         src="{{ asset('/img/arrow.png') }}"
+                    >
+                </a>
+            {% else %}
+                <img class="w-8 h-8 -scale-x-100 grayscale opacity-50"
+                     src="{{ asset('/img/arrow.png') }}"
+                >
+            {% endif %}
 
-                {% for i in 1..paginator.lastPage %}
-                    {% if i == paginator.currentPage %}
-                        <li class="active"><span>{{ i }} <span class="sr-only">{{ 'paginator.current'|trans }}</span></span></li>
-                    {% else %}
-                        <li><a href="{{ path('app_blog_paginated', {page: i}) }}">{{ i }}</a></li>
-                    {% endif %}
-                {% endfor %}
-
-                {% if paginator.hasNextPage %}
-                    <li class="next"><a href="{{ path('app_blog_paginated', {page: paginator.nextPage}) }}" rel="next">{{ 'paginator.next'|trans }} <i class="fa fw fa-arrow-right"></i></a></li>
+            {% for i in 1..paginator.lastPage %}
+                {% if i == paginator.currentPage %}
+                    <span class="px-2.5 bg-amber-700 text-white rounded-full">
+                            {{ i }}
+                        </span>
                 {% else %}
-                    <li class="next disabled"><span>{{ 'paginator.next'|trans }} <i class="fa fw fa-arrow-right"></i></span></li>
+                    <a href="{{ path('app_blog_paginated', {page: i}) }}"
+                        class="px-2.5 hover:text-amber-600">
+                        {{ i }}
+                    </a>
                 {% endif %}
-            </ul>
+            {% endfor %}
+
+            {% if paginator.hasNextPage %}
+                <a href="{{ path('app_blog_paginated', {page: paginator.nextPage}) }}"
+                >
+                    <img class="w-8 h-8"
+                         src="{{ asset('/img/arrow.png') }}"
+                    >
+                </a>
+            {% else %}
+                <img class="w-8 h-8 grayscale opacity-50"
+                     src="{{ asset('/img/arrow.png') }}"
+                >
+            {% endif %}
         </div>
     {% endif %}
 {% endblock %}
