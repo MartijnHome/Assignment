@@ -33,7 +33,7 @@
                 </a>
 
                     <form method="post"
-                          action="{{ path('app_blog_remove_image', {'id': blog.id, 'image': loop.index0}) }}"
+                          action="{{ path('app_blog_remove_image', {'id': blog.id, 'index': loop.index0}) }}"
                           onsubmit="return confirm('Are you sure you want to delete this image?');">
                         <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ blog.id) }}">
                         <button class="absolute -top-2 -right-2 bg-red-800 text-white p-2 rounded-xl ">

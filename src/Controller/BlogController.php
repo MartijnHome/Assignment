@@ -15,6 +15,7 @@ use App\Service\MailManager;
 use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,10 +36,12 @@ use Twig\Environment;
 class BlogController extends AbstractController
 {
     private Security $security;
+    private LoggerInterface $logger;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security, LoggerInterface $logger)
     {
         $this->security = $security;
+        $this->logger = $logger;
     }
     
     #[Route('/', name: 'app_blog_index', methods: ['GET'])]
@@ -96,7 +99,9 @@ class BlogController extends AbstractController
             try {
                 $mailManager->blogPublished($blog);
             } catch (TransportExceptionInterface $e) {
-                //Email could not be sent but let's create the blog anyway
+                $this->logger->error("Blog published mail cannot be sent", [
+                    'message' => $e->getMessage(),
+                ]);
             }
 
             return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
@@ -107,9 +112,6 @@ class BlogController extends AbstractController
             'form' => $form,
         ]);
     }
-
-
-
 
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Blog $blog, CommentaryRepository $commentaryRepository): Response
@@ -183,16 +185,15 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/remove/{image}', name: 'app_blog_remove_image', methods: ['POST'])]
+    #[Route('/{id}/remove/{index}', name: 'app_blog_remove_image', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function removeImage(Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, int $image): Response
+    public function removeImage(Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, int $index): Response
     {
-        //User requests additional image to be removed
         $images = explode(";", $blog->getAdditionalImages());
-        $fileManager->delete($images[$image]);
-        array_splice($images, $image, 1);
+        array_splice($images, $index, 1);
         $blog->setAdditionalImages(empty($images) ? null : implode(";", $images));
         $blogRepository->save($blog, true);
+        $fileManager->delete($images[$index]);
 
         return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
     }

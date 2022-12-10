@@ -15,6 +15,7 @@ class MailManager
         $this->mailer = $mailer;
     }
 
+
     /**
      * @throws TransportExceptionInterface
      */

@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Twig\Environment;
 
-class LoginController extends AbstractController
+class AccountController extends AbstractController
 {
     private Security $security;
 
