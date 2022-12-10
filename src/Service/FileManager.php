@@ -11,25 +11,28 @@ class FileManager
 {
     private SluggerInterface $slugger;
     private FileSystem $fileSystem;
+    private String $blogimage_directory;
 
-    public function __construct(SluggerInterface $slugger, Filesystem $fileSystem)
+    public function __construct(SluggerInterface $slugger, Filesystem $fileSystem, String $blogimage_directory)
     {
         $this->slugger = $slugger;
         $this->fileSystem = $fileSystem;
+        $this->blogimage_directory = $blogimage_directory;
     }
 
-    public function upload(UploadedFile $file, String $directory): ?string
+    public function upload(UploadedFile $file): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-        $file->move($directory, $fileName);;
+        $file->move($this->blogimage_directory, $fileName);;
 
         return $fileName;
     }
 
-    public function delete(String $file, String $directory): void
+    public function delete(String $file): void
     {
-        $this->fileSystem->remove($directory . "/" . $file);
+        $this->fileSystem->remove($this->blogimage_directory . "/" . $file);
     }
+
 }

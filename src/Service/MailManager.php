@@ -29,6 +29,7 @@ class MailManager
             ->context([
                 'url' => 'http://localhost:8000/blog/' . $blog->getId(),
             ]);
+
         $this->mailer->send($email);
     }
 }
