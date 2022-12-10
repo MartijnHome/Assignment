@@ -175,7 +175,7 @@ class BlogController extends AbstractController
             $blogRepository->save($blog, true);
             return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
         }
-        //dd($blog->getAdditionalImages());
+
         return $this->renderForm('blog/edit.html.twig', [
             'blog' => $blog,
             'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
@@ -211,16 +211,16 @@ class BlogController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function delete(Request $request, Blog $blog, FileManager $fileManager, BlogRepository $blogRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->request->get('_token'))) {
-            //Clear up images
-            $fileManager->delete($blog->getMainImage(), $this->getParameter('blogimage_directory'));
-            if ($blog->getAdditionalImages())
-                foreach(explode(";",$blog->getAdditionalImages()) as $file)
-                    $fileManager->delete($file, $this->getParameter('blogimage_directory'));
+        if (!$this->isCsrfTokenValid('delete-item', $request->request->get('token')))
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
 
-            $blogRepository->remove($blog, true);
-        }
+        $fileManager->delete($blog->getMainImage());
+        if ($blog->getAdditionalImages())
+            foreach(explode(";",$blog->getAdditionalImages()) as $file)
+                $fileManager->delete($file);
 
+        $blogRepository->remove($blog, true);
         return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
     }
 }

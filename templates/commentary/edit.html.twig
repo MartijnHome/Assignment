@@ -5,9 +5,7 @@
 {% block content %}
     <h1>Edit Commentary</h1>
 
-    {{ include('commentary/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('commentary/_form.html.twig', {'button_label': 'Submit'}) }}
 
-    <a href="{{ route }}">back to list</a>
-
-    {{ include('commentary/_delete_form.html.twig') }}
+    <a href="{{ route }}">Back to list</a>
 {% endblock %}
