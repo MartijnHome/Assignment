@@ -16,10 +16,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
 {
+    protected Security $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     #[Route('/page/{page<[1-9]\d*>}', name: 'app_blog_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
     public function paginated(BlogRepository $blogRepository, int $page): Response
     {
@@ -118,6 +126,10 @@ class BlogController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function edit(Request $request, Blog $blog, BlogRepository $blogRepository, FileManager $fileManager): Response
     {
+        if ($this->security->getUser() !== $blog->getUser())
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
+
         $form = $this->createForm(BlogType::class, $blog, [
             'main_image_required' => false,
             'main_image_label' => "Optional - Replace main image",
@@ -190,6 +202,10 @@ class BlogController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function removeImage(Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, int $index): Response
     {
+        if ($this->security->getUser() !== $blog->getUser())
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
+
         $images = explode(";", $blog->getAdditionalImages());
         $fileManager->delete($images[$index]);
         array_splice($images, $index, 1);
@@ -203,6 +219,10 @@ class BlogController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function archive(Request $request, Blog $blog, BlogRepository $blogRepository): Response
     {
+        if ($this->security->getUser() !== $blog->getUser())
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
+
         $blog->setArchived(!$blog->isArchived());
         $blogRepository->save($blog, true);
         $route = $request->headers->get('referer');
@@ -213,7 +233,8 @@ class BlogController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function delete(Request $request, Blog $blog, FileManager $fileManager, BlogRepository $blogRepository): Response
     {
-        if (!$this->isCsrfTokenValid('delete-item', $request->request->get('token')))
+        if ($this->security->getUser() !== $blog->getUser()
+            || !$this->isCsrfTokenValid('delete-item', $request->request->get('token')))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
 
