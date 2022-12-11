@@ -12,6 +12,7 @@ use App\Service\FileManager;
 use App\Service\MailManager;
 use DateTime;
 use DateTimeZone;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,8 +61,19 @@ class BlogController extends AbstractController
 
             //Upload main image
             $mainImage = $form->get('main_image')->getData();
-            $file = $fileManager->upload($mainImage);
-            $blog->setMainImage($file);
+            try {
+                $file = $fileManager->upload($mainImage);
+                $blog->setMainImage($file);
+            } catch (\Exception $e) {
+                $this->addFlash(
+                    'upload_error',
+                    'Something went wrong uploading your image(s). Please try again or contact us'
+                );
+                return $this->renderForm('blog/new.html.twig', [
+                    'blog' => $blog,
+                    'form' => $form,
+                ]);
+            }
 
             //Upload additional images
             $additionalImages = $form->get('additional_images')->getData();
@@ -69,8 +81,23 @@ class BlogController extends AbstractController
                 $files = array();
                 foreach ($additionalImages as $image)
                 {
-                    $file = $fileManager->upload($image);
-                    $files[] = $file;
+                    try {
+                        $file = $fileManager->upload($image);
+                        $files[] = $file;
+                    } catch (Exception $e) {
+                        // Delete any orphan images
+                        foreach ($files as $file)
+                            $fileManager->delete($file);
+
+                        $this->addFlash(
+                            'upload_error',
+                            'Something went wrong uploading your image(s). Please try again or contact us'
+                        );
+                        return $this->renderForm('blog/new.html.twig', [
+                            'blog' => $blog,
+                            'form' => $form,
+                        ]);
+                    }
                 }
                 $blog->setAdditionalImages(implode(";", $files));
             }
@@ -134,24 +161,50 @@ class BlogController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $mainImage = $form->get('main_image')->getData();
             if ($mainImage) {
-                //Delete old one first
-                $fileManager->delete($blog->getMainImage());
-                $file = $fileManager->upload($mainImage);
-                $blog->setMainImage($file);
+                try {
+                    $file = $fileManager->upload($mainImage);
+                    $fileManager->delete($blog->getMainImage());
+                    $blog->setMainImage($file);
+                } catch (Exception $e) {
+                    $this->addFlash(
+                        'upload_error',
+                        'Something went wrong uploading your image(s). Please try again or contact us'
+                    );
+                    return $this->renderForm('blog/edit.html.twig', [
+                        'blog' => $blog,
+                        'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
+                        'form' => $form,
+                    ]);
+                }
             }
 
             //Upload additional images
             $additionalImages = $form->get('additional_images')->getData();
             if ($additionalImages) {
                 $files = array();
-                if ($blog->getAdditionalImages())
-                    $files = explode(";", $blog->getAdditionalImages());
-
                 foreach ($additionalImages as $image)
                 {
-                    $file = $fileManager->upload($image);
-                    $files[] = $file;
+                    try {
+                        $file = $fileManager->upload($image);
+                        $files[] = $file;
+                    } catch (Exception $e) {
+                        // Delete any orphan images
+                        foreach ($files as $file)
+                            $fileManager->delete($file);
+
+                        $this->addFlash(
+                            'upload_error',
+                            'Something went wrong uploading your image(s). Please try again or contact us'
+                        );
+                        return $this->renderForm('blog/edit.html.twig', [
+                            'blog' => $blog,
+                            'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
+                            'form' => $form,
+                        ]);
+                    }
                 }
+                if ($blog->getAdditionalImages())
+                    $files = array_merge(explode(";", $blog->getAdditionalImages()), $files);
                 $blog->setAdditionalImages(implode(";", $files));
             }
 
@@ -171,10 +224,10 @@ class BlogController extends AbstractController
     public function removeImage(Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, int $index): Response
     {
         $images = explode(";", $blog->getAdditionalImages());
+        $fileManager->delete($images[$index]);
         array_splice($images, $index, 1);
         $blog->setAdditionalImages(empty($images) ? null : implode(";", $images));
         $blogRepository->save($blog, true);
-        $fileManager->delete($images[$index]);
 
         return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
     }
