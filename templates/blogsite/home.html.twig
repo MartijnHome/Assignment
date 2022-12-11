@@ -8,10 +8,10 @@
     <div class="lg:flex">
         <div class="lg:flex-auto lg:w-3/4">
             <img class="h-80 w-full rounded-2xl"
-                 src="img/banner.png"
+                 src="{{ asset('img/banner.png') }}"
             >
             <h1 class="text-xl my-2">
-                De blogsite van personen met ongekende talent
+                De leukste blogsite
             </h1>
 
             <p class="my-4">
@@ -41,11 +41,13 @@
                 </h1>
                 <ol class="list-decimal list-inside">
                     {% for blog in latest_five %}
-                        <a href="{{ path('app_blog_show', {'id': blog.id}) }}"
-                           class="hover:text-amber-600"
-                        >
-                            <li>{{ blog.title }}</li>
-                        </a>
+                        <li>
+                            <a href="{{ path('app_blog_show', {'id': blog.id}) }}"
+                               class="hover:text-amber-600"
+                            >
+                                {{ blog.title }}
+                            </a>
+                        </li>
                     {% else %}
                         <li>No recent blogs posted</li>
                     {% endfor %}
@@ -57,11 +59,13 @@
                 </h1>
                 <ol class="list-decimal list-inside">
                     {% for commentary in commentaries %}
-                        <a href="{{ path('app_blog_show', {'id': commentary.blog.id}) }}"
-                           class="hover:text-amber-600"
-                        >
-                            <li>{{ commentary.text }}</li>
-                        </a>
+                        <li>
+                            <a href="{{ path('app_blog_show', {'id': commentary.blog.id}) }}"
+                               class="hover:text-amber-600"
+                            >
+                                {{ commentary.text }}
+                            </a>
+                        </li>
                     {% else %}
                         <li>No commentaries found</li>
                     {% endfor %}
@@ -73,11 +77,13 @@
                 </h1>
                 <ol class="list-decimal list-inside">
                     {% for blog in top_commented %}
-                        <a href="{{ path('app_blog_show', {'id': blog.id}) }}"
-                           class="hover:text-amber-600"
-                        >
-                            <li>{{ blog.title }}</li>
-                        </a>
+                        <li>
+                            <a href="{{ path('app_blog_show', {'id': blog.id}) }}"
+                               class="hover:text-amber-600"
+                            >
+                                {{ blog.title }}
+                            </a>
+                        </li>
                     {% else %}
                         <li>No recent blogs posted</li>
                     {% endfor %}

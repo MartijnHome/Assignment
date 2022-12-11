@@ -50,13 +50,16 @@
                     <a href="{{ path('app_blog_archive', {'id': blog.id}) }}"
                        class="hover:text-amber-600"
                     >
-                        <button class="bg-sky-800 text-white p-2 rounded-xl m-2">
-                            {% if blog.archived %}
+                        {% if blog.archived %}
+                            <button class="bg-green-800 text-white p-2 rounded-xl m-2">
                                 Republish
-                            {% else %}
+                            </button>
+
+                        {% else %}
+                            <button class="bg-yellow-800 text-white p-2 rounded-xl m-2">
                                 Archive
-                            {% endif %}
-                        </button>
+                            </button>
+                        {% endif %}
                     </a>
                     <form method="post"
                           action="{{ path('app_blog_delete', {'id': blog.id}) }}"
