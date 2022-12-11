@@ -42,7 +42,7 @@ class CommentaryRepository extends ServiceEntityRepository
     public function getLatestFive(): array
     {
         return $this->createQueryBuilder('commentary')
-            ->orderBy('commentary.id', 'ASC')
+            ->orderBy('commentary.id', 'DESC')
             ->setMaxResults(5)
             ->getQuery()
             ->getResult();
