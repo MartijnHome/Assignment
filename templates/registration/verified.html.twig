@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Registration
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-xl my-2">Welcome {{ name }}</h1>
+
+    <p class="my-2">
+        Your account has successfully been verified and activated.
+    </p>
+
+    <a href="/login">
+        <button class="bg-amber-600 text-white p-2 rounded-xl mt-2">
+            Go to login page
+        </button>
+    </a>
+{% endblock %}

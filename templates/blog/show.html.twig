@@ -77,13 +77,29 @@
         {% endfor %}
     </div>
 
+    <div class="mb-10">
+        {% if app.user %}
+            <h1 class="mt-10 text-2xl">Add your comments</h1>
+            {{ form(commentary_form) }}
+        {% else %}
+            <h1 class="mt-10 text-2xl">Please login to add a comment</h1>
+            <a href="/login"
+               class="hover:text-amber-600 ">
+                <button class="bg-amber-800 text-white p-2 rounded-xl mx-2">
+                    Go to login page
+                </button>
+            </a>
+        {% endif %}
+    </div>
 
-    <h1 class="mt-10 text-2xl">Add your comments</h1>
-    {{ form(commentary_form) }}
+    <div>
+        <a href="{{ route }}"
+           class="hover:text-amber-600">
+            <button class="bg-amber-800 text-white p-2 rounded-xl mx-2">
+                Go back
+            </button>
+        </a>
+    </div>
 
-    <a href="{{ route }}"
-       class="hover:text-amber-600">
-        Go back
-    </a>
 
 {% endblock %}
