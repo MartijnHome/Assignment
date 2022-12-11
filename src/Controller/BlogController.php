@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Blog;
 use App\Entity\Commentary;
-use App\Entity\User;
-use App\Form\BlogEditType;
 use App\Form\BlogType;
 use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
@@ -14,23 +12,14 @@ use App\Service\FileManager;
 use App\Service\MailManager;
 use DateTime;
 use DateTimeZone;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Twig\Environment;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
@@ -42,14 +31,6 @@ class BlogController extends AbstractController
     {
         $this->security = $security;
         $this->logger = $logger;
-    }
-    
-    #[Route('/', name: 'app_blog_index', methods: ['GET'])]
-    public function index(BlogRepository $blogRepository): Response
-    {
-        return $this->render('blog/index.html.twig', [
-            'blogs' => $blogRepository->getPublished(),
-        ]);
     }
 
     #[Route('/page/{page<[1-9]\d*>}', name: 'app_blog_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]

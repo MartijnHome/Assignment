@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\BlogRepository;
-use App\Service\FileManager;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
