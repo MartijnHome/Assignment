@@ -27,6 +27,14 @@ class Commentary
     #[ORM\Column(length: 255)]
     private ?string $text = null;
 
+    /**
+     * @param Blog $blog
+     */
+    public function __construct(Blog $blog)
+    {
+        $this->blog = $blog;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -25,3 +25,22 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Service\FileManager:
         $blogimage_directory: '%kernel.project_dir%/public/uploads/blog/image'
+
+    App\Doctrine\BlogListener:
+        tags:
+            -
+                # these are the options required to define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'prePersist'
+                entity: 'App\Entity\Blog'
+            - # these are the options required to define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postPersist'
+                entity: 'App\Entity\Blog'
+
+    App\Doctrine\CommentaryListener:
+        tags:
+            - # these are the options required to define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'prePersist'
+                entity: 'App\Entity\Commentary'

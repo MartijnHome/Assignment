@@ -10,30 +10,16 @@ use App\Repository\BlogRepository;
 use App\Repository\CommentaryRepository;
 use App\Service\FileManager;
 use App\Service\MailManager;
-use DateTime;
-use DateTimeZone;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
 {
-    private Security $security;
-    private LoggerInterface $logger;
-
-    public function __construct(Security $security, LoggerInterface $logger)
-    {
-        $this->security = $security;
-        $this->logger = $logger;
-    }
-
     #[Route('/page/{page<[1-9]\d*>}', name: 'app_blog_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
     public function paginated(BlogRepository $blogRepository, int $page): Response
     {
@@ -51,14 +37,6 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //Publish date
-            $datetime = new DateTime('now');
-            $datetime->setTimezone(new DateTimeZone('Europe/Amsterdam'));
-            $blog->setPublishDate($datetime);
-
-            //User
-            $blog->setUser($this->security->getUser());
-
             //Upload main image
             $mainImage = $form->get('main_image')->getData();
             try {
@@ -102,16 +80,7 @@ class BlogController extends AbstractController
                 $blog->setAdditionalImages(implode(";", $files));
             }
 
-            //Save and email user
             $blogRepository->save($blog, true);
-            try {
-                $mailManager->blogPublished($blog);
-            } catch (TransportExceptionInterface $e) {
-                $this->logger->error("Blog published mail cannot be sent", [
-                    'message' => $e->getMessage(),
-                ]);
-            }
-
             return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -124,15 +93,13 @@ class BlogController extends AbstractController
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Blog $blog, CommentaryRepository $commentaryRepository): Response
     {
-        $commentary = new Commentary();
+        $commentary = new Commentary($blog);
         $form = $this->createForm(CommentaryType::class, $commentary);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             //Get method is public, but for post method check if user is authenticated
             $this->denyAccessUnlessGranted('ROLE_USER');
-            $commentary->setBlog($blog);
-            $commentary->setUser($this->security->getUser());
             $commentaryRepository->save($commentary, true);
             return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
         }

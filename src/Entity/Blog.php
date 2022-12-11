@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\BlogRepository;
+use App\Service\MailManager;
+use DateTime;
 use DateTimeInterface;
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
 class Blog
 {
@@ -111,6 +115,9 @@ class Blog
         return $this;
     }
 
+
+
+
     public function getText(): ?string
     {
         return $this->text;
@@ -192,4 +199,19 @@ class Blog
 
         return $this;
     }
+
+
+/*
+    #[ORM\PrePersist]
+    public function sendEmail(): void
+    {
+        $mailManager = new MailManager();
+        try {
+            $mailManager->blogPublished($this);
+        } catch (TransportExceptionInterface $e) {
+            $this->logger->error("Blog published mail cannot be sent", [
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }*/
 }
