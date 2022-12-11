@@ -43,11 +43,10 @@ The frontend is styled with Tailwind CSS. The project should work without furthe
 In case the front end is not styled, please follow these directions: 
 https://tailwindcss.com/docs/guides/symfony
 
-As backup you can also uncomment this script line inside templates\base.html.twig:
-&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
-
+If all else fails you can also uncomment the tailwind script line inside templates\base.html.twig
 ## How to run
 Open a console, go to the project directory and run:
+<br>
 symfony server:start
 
 ## Login credentials
