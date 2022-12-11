@@ -30,6 +30,7 @@ Symfony is configured to use MariaDB with these settings:
 If necessary adjust these settings inside the .env file.
 See: https://symfony.com/doc/current/doctrine.html#configuring-the-database
 
+For importing instructions, please go to: https://www.digitalocean.com/community/tutorials/how-to-import-and-export-databases-in-mysql-or-mariadb
 ### Mailhog
 This project relies on mailhog to send emails. To install mailhog go to:
 https://github.com/mailhog/MailHog
