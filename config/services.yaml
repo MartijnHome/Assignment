@@ -29,13 +29,20 @@ services:
     App\Doctrine\BlogListener:
         tags:
             -
-                # these are the options required to define the entity listener
                 name: 'doctrine.orm.entity_listener'
                 event: 'prePersist'
                 entity: 'App\Entity\Blog'
-            - # these are the options required to define the entity listener
+            -
                 name: 'doctrine.orm.entity_listener'
                 event: 'postPersist'
+                entity: 'App\Entity\Blog'
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'preRemove'
+                entity: 'App\Entity\Blog'
+
+            -   name: 'doctrine.orm.entity_listener'
+                event: 'postRemove'
                 entity: 'App\Entity\Blog'
 
     App\Doctrine\CommentaryListener:
@@ -44,3 +51,10 @@ services:
                 name: 'doctrine.orm.entity_listener'
                 event: 'prePersist'
                 entity: 'App\Entity\Commentary'
+
+    App\Doctrine\ImageListener:
+        tags:
+            - # these are the options required to define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'preRemove'
+                entity: 'App\Entity\Image'

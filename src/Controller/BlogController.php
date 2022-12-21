@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Blog;
 use App\Entity\Commentary;
+use App\Entity\Image;
 use App\Form\BlogType;
 use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
 use App\Repository\CommentaryRepository;
+use App\Repository\ImageRepository;
 use App\Service\FileManager;
-use App\Service\MailManager;
-use Exception;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,55 +39,18 @@ class BlogController extends AbstractController
 
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, MailManager $mailManager): Response
+    public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, ImageRepository $imageRepository): Response
     {
         $blog = new Blog();
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //Upload main image
-            $mainImage = $form->get('main_image')->getData();
-            try {
-                $file = $fileManager->upload($mainImage);
-                $blog->setMainImage($file);
-            } catch (\Exception $e) {
-                $this->addFlash(
-                    'upload_error',
-                    'Something went wrong uploading your image(s). Please try again or contact us'
-                );
-                return $this->renderForm('blog/new.html.twig', [
-                    'blog' => $blog,
-                    'form' => $form,
-                ]);
-            }
+            $leadImage = $form->get('main_image')->getData();
+            $imageRepository->save(new Image($blog, $fileManager->upload($leadImage), true));
 
-            //Upload additional images
-            $additionalImages = $form->get('additional_images')->getData();
-            if ($additionalImages) {
-                $files = array();
-                foreach ($additionalImages as $image)
-                {
-                    try {
-                        $file = $fileManager->upload($image);
-                        $files[] = $file;
-                    } catch (Exception $e) {
-                        // Delete any orphan images
-                        foreach ($files as $file)
-                            $fileManager->delete($file);
-
-                        $this->addFlash(
-                            'upload_error',
-                            'Something went wrong uploading your image(s). Please try again or contact us'
-                        );
-                        return $this->renderForm('blog/new.html.twig', [
-                            'blog' => $blog,
-                            'form' => $form,
-                        ]);
-                    }
-                }
-                $blog->setAdditionalImages(implode(";", $files));
-            }
+            foreach ($form->get('additional_images')->getData() as $image)
+                $imageRepository->save(new Image($blog, $fileManager->upload($image)));
 
             $blogRepository->save($blog, true);
             return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
@@ -99,7 +63,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Blog $blog, CommentaryRepository $commentaryRepository): Response
+    public function show(Request $request, Blog $blog, FileManager $fileManager, CommentaryRepository $commentaryRepository): Response
     {
         $commentary = new Commentary($blog);
         $form = $this->createForm(CommentaryType::class, $commentary);
@@ -116,7 +80,7 @@ class BlogController extends AbstractController
             'blog' => $blog,
             'commentaries' => $blog->getCommentaries(),
             'commentary_form' => $form->createView(),
-            'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
+            'images' => $blog->getImages(),
             'route' => $request->headers->get('referer'),
         ]);
     }
@@ -124,7 +88,7 @@ class BlogController extends AbstractController
 
     #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function edit(Request $request, Blog $blog, BlogRepository $blogRepository, FileManager $fileManager): Response
+    public function edit(Request $request, Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, ImageRepository $imageRepository): Response
     {
         if ($this->security->getUser() !== $blog->getUser())
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
@@ -138,54 +102,15 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $mainImage = $form->get('main_image')->getData();
-            if ($mainImage) {
-                try {
-                    $file = $fileManager->upload($mainImage);
-                    $fileManager->delete($blog->getMainImage());
-                    $blog->setMainImage($file);
-                } catch (Exception $e) {
-                    $this->addFlash(
-                        'upload_error',
-                        'Something went wrong uploading your image(s). Please try again or contact us'
-                    );
-                    return $this->renderForm('blog/edit.html.twig', [
-                        'blog' => $blog,
-                        'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
-                        'form' => $form,
-                    ]);
-                }
+            $leadImage = $form->get('main_image')->getData();
+            if ($leadImage) {
+                $oldLead = $blog->getLead();
+                $imageRepository->save(new Image($blog, $fileManager->upload($leadImage), true));
+                $imageRepository->remove($oldLead, true);
             }
 
-            //Upload additional images
-            $additionalImages = $form->get('additional_images')->getData();
-            if ($additionalImages) {
-                $files = array();
-                foreach ($additionalImages as $image)
-                {
-                    try {
-                        $file = $fileManager->upload($image);
-                        $files[] = $file;
-                    } catch (Exception $e) {
-                        // Delete any orphan images
-                        foreach ($files as $file)
-                            $fileManager->delete($file);
-
-                        $this->addFlash(
-                            'upload_error',
-                            'Something went wrong uploading your image(s). Please try again or contact us'
-                        );
-                        return $this->renderForm('blog/edit.html.twig', [
-                            'blog' => $blog,
-                            'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
-                            'form' => $form,
-                        ]);
-                    }
-                }
-                if ($blog->getAdditionalImages())
-                    $files = array_merge(explode(";", $blog->getAdditionalImages()), $files);
-                $blog->setAdditionalImages(implode(";", $files));
-            }
+            foreach ($form->get('additional_images')->getData() as $image)
+                $imageRepository->save(new Image($blog, $fileManager->upload($image)));
 
             $blogRepository->save($blog, true);
             return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
@@ -193,26 +118,9 @@ class BlogController extends AbstractController
 
         return $this->renderForm('blog/edit.html.twig', [
             'blog' => $blog,
-            'images' => ($blog->getAdditionalImages() != null) ? explode(";", $blog->getAdditionalImages()) : null,
+            'images' => $blog->getImages(),
             'form' => $form,
         ]);
-    }
-
-    #[Route('/{id}/remove/{index}', name: 'app_blog_remove_image', methods: ['POST'])]
-    #[IsGranted('IS_AUTHENTICATED')]
-    public function removeImage(Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, int $index): Response
-    {
-        if ($this->security->getUser() !== $blog->getUser())
-            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
-                ['content-type' => 'text/plain']);
-
-        $images = explode(";", $blog->getAdditionalImages());
-        $fileManager->delete($images[$index]);
-        array_splice($images, $index, 1);
-        $blog->setAdditionalImages(empty($images) ? null : implode(";", $images));
-        $blogRepository->save($blog, true);
-
-        return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}/archive', name: 'app_blog_archive', methods: ['GET', 'POST'])]
@@ -231,17 +139,12 @@ class BlogController extends AbstractController
 
     #[Route('/{id}/delete', name: 'app_blog_delete', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function delete(Request $request, Blog $blog, FileManager $fileManager, BlogRepository $blogRepository): Response
+    public function delete(Request $request, Blog $blog, BlogRepository $blogRepository, ManagerRegistry $doctrine): Response
     {
         if ($this->security->getUser() !== $blog->getUser()
             || !$this->isCsrfTokenValid('delete-item', $request->request->get('token')))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
-
-        $fileManager->delete($blog->getMainImage());
-        if ($blog->getAdditionalImages())
-            foreach(explode(";",$blog->getAdditionalImages()) as $file)
-                $fileManager->delete($file);
 
         $blogRepository->remove($blog, true);
         return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);

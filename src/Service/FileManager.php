@@ -1,6 +1,8 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Blog;
+use App\Entity\Image;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -23,9 +25,6 @@ class FileManager
         $this->logger = $logger;
     }
 
-    /**
-     * @throws Exception
-     */
     public function upload(UploadedFile $file): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -38,7 +37,6 @@ class FileManager
                 'message' => $e->getMessage(),
                 'filename' => $file,
             ]);
-            throw new Exception("File could not be uploaded");
         }
         return $fileName;
     }
@@ -53,6 +51,15 @@ class FileManager
                 'filename' => $file,
             ]);
         }
+    }
+
+    public function getBlogImageFilenames(Blog $blog, bool $ignoreLead = true): array
+    {
+        $fileNames = array();
+        foreach($blog->getImages() as $image)
+            if (!$ignoreLead || $image->getBlog() !== $blog)
+            $fileNames[] = $image->getFilename();
+        return $fileNames;
     }
 
 }

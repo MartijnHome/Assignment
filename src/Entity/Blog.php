@@ -41,22 +41,25 @@ class Blog
     #[ORM\Column(type: Types::TEXT)]
     private ?string $text = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $main_image = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $additional_images = null;
-
     #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Commentary::class, orphanRemoval: true)]
     private Collection $commentaries;
 
     #[ORM\Column]
     private ?bool $archived = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Image $lead = null;
+
+    #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Image::class)]
+    private Collection $images;
+
+
     public function __construct()
     {
         $this->commentaries = new ArrayCollection();
         $this->archived = false;
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,9 +115,6 @@ class Blog
         return $this;
     }
 
-
-
-
     public function getText(): ?string
     {
         return $this->text;
@@ -123,30 +123,6 @@ class Blog
     public function setText(string $text): self
     {
         $this->text = $text;
-
-        return $this;
-    }
-
-    public function getMainImage(): ?string
-    {
-        return $this->main_image;
-    }
-
-    public function setMainImage(string $main_image): self
-    {
-        $this->main_image = $main_image;
-
-        return $this;
-    }
-
-    public function getAdditionalImages(): ?string
-    {
-        return $this->additional_images;
-    }
-
-    public function setAdditionalImages(?string $additional_images): self
-    {
-        $this->additional_images = $additional_images;
 
         return $this;
     }
@@ -195,5 +171,48 @@ class Blog
         $this->archived = $archived;
 
         return $this;
+    }
+
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getBlog() === $this) {
+                $image->setBlog(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLead(): ?Image
+    {
+        return $this->lead;
+    }
+
+    public function setLead(Image $lead): self
+    {
+        $this->lead = $lead;
+
+        return $this;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setBlog($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
     }
 }

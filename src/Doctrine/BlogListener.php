@@ -2,6 +2,7 @@
 namespace App\Doctrine;
 
 use App\Entity\Blog;
+use App\Repository\ImageRepository;
 use App\Service\MailManager;
 use DateTime;
 use DateTimeZone;
@@ -15,12 +16,16 @@ class BlogListener
     protected Security $security;
     protected MailManager $mailManager;
     protected LoggerInterface $logger;
-    public function __construct(Security $security, MailManager $mailManager, LoggerInterface $logger)
+    protected ImageRepository $imageRepository;
+
+    public function __construct(Security $security, MailManager $mailManager, LoggerInterface $logger, ImageRepository $imageRepository)
     {
         $this->security = $security;
         $this->mailManager = $mailManager;
         $this->logger = $logger;
+        $this->imageRepository = $imageRepository;
     }
+
     public function prePersist(Blog $blog, LifecycleEventArgs $event): void
     {
         // Publish Date
@@ -42,5 +47,17 @@ class BlogListener
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function preRemove(Blog $blog): void
+    {
+        foreach($blog->getImages() as $image) {
+            $image->setBlog(null);
+        }
+    }
+
+    public function postRemove(): void
+    {
+        $this->imageRepository->removeOrphans();
     }
 }
