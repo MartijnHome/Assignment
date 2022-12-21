@@ -70,7 +70,6 @@ class BlogController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            //Get method is public, but for post method check if user is authenticated
             $this->denyAccessUnlessGranted('ROLE_USER');
             $commentaryRepository->save($commentary, true);
             return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);

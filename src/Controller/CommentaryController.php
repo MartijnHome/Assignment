@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Blog;
 use App\Entity\Commentary;
 use App\Form\CommentaryType;
+use App\Repository\BlogRepository;
 use App\Repository\CommentaryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +23,29 @@ class CommentaryController extends AbstractController
     {
         $this->security = $security;
     }
+
+    /*
+    #[Route('/new', name: 'app_commentary_new', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED')]
+    public function new(Request $request, BlogRepository $blogRepository, CommentaryRepository $commentaryRepository): Response
+    {
+        dd($request);
+        $commentary = new Commentary(new Blog());
+        $form = $this->createForm(CommentaryType::class, $commentary);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $commentary = $form->getData();
+            dd($commentary);
+        }
+
+            $commentaryRepository->save($form->getData(), true);
+
+        $route = $request->headers->get('referer');
+        return $this->redirect($route);
+    }
+*/
 
     #[Route('/{id}/edit', name: 'app_commentary_edit', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
