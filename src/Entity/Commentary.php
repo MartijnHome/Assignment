@@ -28,9 +28,9 @@ class Commentary
     private ?string $text = null;
 
     /**
-     * @param Blog $blog
+     * @param Blog|null $blog
      */
-    public function __construct(Blog $blog)
+    public function __construct(?Blog $blog = null)
     {
         $this->blog = $blog;
     }

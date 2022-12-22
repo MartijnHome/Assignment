@@ -39,12 +39,10 @@ class BlogController extends AbstractController
 
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, ImageRepository $imageRepository): Response
+    public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, ImageRepository $imageRepository, Blog $blog = new Blog()): Response
     {
-        $blog = new Blog();
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $leadImage = $form->get('main_image')->getData();
             $imageRepository->save(new Image($blog, $fileManager->upload($leadImage), true));
@@ -63,17 +61,15 @@ class BlogController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Blog $blog, FileManager $fileManager, CommentaryRepository $commentaryRepository): Response
+    public function show(Request $request, Blog $blog, ManagerRegistry $doctrine, CommentaryRepository $commentaryRepository): Response
     {
-        $commentary = new Commentary($blog);
-        $form = $this->createForm(CommentaryType::class, $commentary);
+        $commentary = new Commentary();
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->denyAccessUnlessGranted('ROLE_USER');
-            $commentaryRepository->save($commentary, true);
-            return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
-        }
+        $form = $this->createForm(CommentaryType::class, $commentary, array(
+            'action' => $this->generateUrl('app_commentary_new', array(
+                'blogId' => $blog->getId(),
+            ))
+        ));
 
         return $this->render('blog/show.html.twig', [
             'blog' => $blog,
@@ -99,7 +95,6 @@ class BlogController extends AbstractController
             'additional_images_label' => "Optional - Add additional images"
         ]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $leadImage = $form->get('main_image')->getData();
             if ($leadImage) {
@@ -132,8 +127,8 @@ class BlogController extends AbstractController
 
         $blog->setArchived(!$blog->isArchived());
         $blogRepository->save($blog, true);
-        $route = $request->headers->get('referer');
-        return $this->redirect($route);
+
+        return $this->redirect($request->headers->get('referer'));
     }
 
     #[Route('/{id}/delete', name: 'app_blog_delete', methods: ['POST'])]
@@ -146,6 +141,7 @@ class BlogController extends AbstractController
                 ['content-type' => 'text/plain']);
 
         $blogRepository->remove($blog, true);
+
         return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
     }
 }
