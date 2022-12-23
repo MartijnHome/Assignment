@@ -8,7 +8,6 @@ use App\Entity\Image;
 use App\Form\BlogType;
 use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
-use App\Repository\CommentaryRepository;
 use App\Repository\ImageRepository;
 use App\Service\FileManager;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,15 +17,23 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Security\Core\Security;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
 {
     protected Security $security;
+    protected Serializer $serializer;
 
     public function __construct(Security $security)
     {
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $this->serializer = new Serializer($normalizers, $encoders);
         $this->security = $security;
     }
 
@@ -62,8 +69,8 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Blog $blog, ManagerRegistry $doctrine, CommentaryRepository $commentaryRepository): Response
+    #[Route('/{id}', name: 'app_blog_show', methods: ['GET'])]
+    public function show(Request $request, Blog $blog, BlogRepository $blogRepository): Response
     {
         $commentary = new Commentary();
 
@@ -77,11 +84,23 @@ class BlogController extends AbstractController
             'blog' => $blog,
             'commentaries' => $blog->getCommentaries(),
             'commentary_form' => $form->createView(),
-            'images' => $blog->getImages(),
+            'images' => $blogRepository->getImageFiles($blog),
             'route' => $request->headers->get('referer'),
         ]);
     }
 
+    #[Route('/api/{id}', name: 'api_blog_show', methods: ['GET'])]
+    public function apiShow(Request $request, Blog $blog): Response
+    {
+        $fileNames = Array();
+        foreach ($blog->getImages() as $image)
+            if (!$image->isIsLead())
+                $fileNames[] = $image->getFilename();
+
+        return $this->json([
+            'message' => $fileNames
+        ]);
+    }
 
     #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
@@ -89,8 +108,6 @@ class BlogController extends AbstractController
     {
         if ($this->security->getUser() !== $blog->getUser())
             throw new AccessDeniedException();
-            //return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
-                //['content-type' => 'text/plain']);
 
         $form = $this->createForm(BlogType::class, $blog, [
             'main_image_required' => false,

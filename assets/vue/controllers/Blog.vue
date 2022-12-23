@@ -1,62 +1,58 @@
 <template>
   <h1 class="text-2xl my-2">
-    <input v-model="title" />
+    {{ title }}
   </h1>
 
   <h2 class="text-lg my-2">
-    <input v-model="subTitle" />
+    {{ subTitle }}
   </h2>
 
   <p class="my-4">
-    <input v-model="text" />
+    {{ text }}
   </p>
 
-  <p>
-    {{ blogId }}
-  </p>
+  <div v-if="images" class="flex flex-wrap gap-4 mb-10">
+    <div v-for="image in images">
+      <button @click="setImage(image)">
+        <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
+             :src="path + image"
+        >
+      </button>
+    </div>
+  </div>
 
-  <p>
-    {{ token }}
-  </p>
-
-  <button @click="go">
-    Hallo
-  </button>
-
-  <p v-if="visible">
-    VISIBLE
-  </p>
+  <ImageViewer v-if="showImage" :fileName="showImage" @requestClose="setImage(null)" />
 </template>
 
 <script>
+import ImageViewer from "./ImageViewer.vue";
+
 export default {
+  components: {
+    ImageViewer
+  },
+
   props: {
     title: String,
     subTitle: String,
     text: String,
     blogId: Number,
     token: String,
+    path: String,
+    images: Array,
   },
 
   data() {
     return {
-      title: this.title,
-      subTitle: this.subTitle,
-      text: this.text,
-      message: this.text,
-      blogId: this.blogId,
-      token: this.token,
-      visible: false,
+      showImage: null,
     }
   },
 
   methods: {
-    go() {
-      this.visible = !this.visible;
+    setImage(image) {
+      this.showImage = image;
     }
   }
-
-
 }
 
 </script>

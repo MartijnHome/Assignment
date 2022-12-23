@@ -84,4 +84,13 @@ class BlogRepository extends ServiceEntityRepository
         return (new Paginator($qb))->paginate($page);
     }
 
+    public function getImageFiles(Blog $blog): array
+    {
+        $files = array();
+        foreach($blog->getImages() as $image)
+            if (!$image->isIsLead())
+                $files[] = $image->getFilename();
+        return $files;
+    }
+
 }
