@@ -13,7 +13,7 @@
 
   <div v-if="refImages" class="flex flex-wrap gap-4 mb-10">
     <div v-for="(image, index) in refImages" class="relative">
-      <button @click="setImage(image[0])">
+      <button @click="setImage(index)">
         <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
              :src="path + image[0]"
         >
@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <ImageViewer v-if="showImage" :fileName="showImage" @requestClose="setImage(null)" />
+  <ImageViewer v-if="index" :path="path" :index="index" :images="refImages" @requestClose="setImage(null)" />
 </template>
 
 <script>
@@ -57,14 +57,14 @@ export default {
 
   data() {
     return {
-      showImage: null,
+      index: null,
       refImages: this.images,
     }
   },
 
   methods: {
-    setImage(image) {
-      this.showImage = image;
+    setImage(index) {
+      this.index = index;
     },
 
     deleteImage(index) {
