@@ -34,27 +34,20 @@ class RateLimiterSubscriber implements EventSubscriberInterface {
 
     public function onKernelRequest(RequestEvent $event): void {
         $request = $event->getRequest();
-        if(str_contains($request->get("_route"), 'app_')) {
-            if ($this->tokenStorage->getToken()) {
+
+        if(str_contains($request->get("_route"), 'app_'))
+            if ($this->tokenStorage->getToken())
                 $limiter = $this->authenticatedAppLimiter->create($request->getClientIp());
-                if (false === $limiter->consume(1)->isAccepted()) {
-                    throw new TooManyRequestsHttpException();
-                }
+            else
+                $limiter = $this->anonymousAppLimiter->create($request->getClientIp());
+        else
+            if(str_contains($request->get("_route"), 'api_'))
+                $limiter = $this->apiLimiter->create($request->getClientIp());
+            else
                 return;
-            }
 
-            $limiter = $this->anonymousAppLimiter->create($request->getClientIp());
-            if (false === $limiter->consume(1)->isAccepted()) {
-                throw new TooManyRequestsHttpException();
-            }
-            return;
-        }
+        if (false === $limiter->consume(1)->isAccepted())
+            throw new TooManyRequestsHttpException();
 
-        if(str_contains($request->get("_route"), 'api_')) {
-            $limiter = $this->apiLimiter->create($request->getClientIp());
-            if (false === $limiter->consume(1)->isAccepted()) {
-                throw new TooManyRequestsHttpException();
-            }
-        }
     }
 }
