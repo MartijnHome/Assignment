@@ -76,16 +76,18 @@ class ImageController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_image_delete', methods: ['POST'])]
-    public function delete(Request $request, Image $image, FileManager $fileManager, ImageRepository $imageRepository): Response
+    #[Route('/{id}', name: 'api_image_delete', methods: ['POST'])]
+    public function delete(Request $request, Image $image, ImageRepository $imageRepository): Response
     {
         $blog = $image->getBlog();
         if ($this->security->getUser() !== $blog->getUser()
-            || !$this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token')))
+            || !$this->isCsrfTokenValid('delete', $request->request->get('_token')))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
 
         $imageRepository->remove($image, true);
-        return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
+        return $this->json([
+            'message' => 'Image deleted',
+        ]);
     }
 }

@@ -11,34 +11,17 @@
 
     <div {{
     vue_component('Blog', {
-            'title' : blog.title,
-            'subTitle' : blog.subTitle,
-            'text' : blog.text,
-            'blogId' : blog.id,
-            'token' : csrf_token('edit-item')
-        })
+        'title' : blog.title,
+        'subTitle' : blog.subTitle,
+        'text' : blog.text,
+        'blogId' : blog.id,
+        'token' : csrf_token('delete'),
+        'path' : absolute_url(path('app_home') ) ~ 'uploads/blog/image/',
+        'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
+        'images' : images,
+        'editMode' : true
+    })
     }}>
-    </div>
-    <div class="flex flex-wrap gap-4 mb-10">
-        {% for image in images %}
-            {% if image.isLead() == false %}
-            <div class="relative">
-                <a href="{{ asset('uploads/blog/image/' ~ image.getFileName()) }}"
-                   target="_blank"
-                >
-                    <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
-                         src="{{ asset('uploads/blog/image/' ~ image.getFileName()) }}"
-                    >
-                </a>
-                <form method="post" action="{{ path('app_image_delete', {'id': image.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ image.id) }}">
-                    <button class="absolute -top-2 -right-2 bg-red-800 text-white p-2 rounded-xl ">
-                        X
-                    </button>
-                </form>
-            </div>
-            {% endif %}
-        {% endfor %}
     </div>
 
     {% for flash_error in app.flashes('upload_error') %}

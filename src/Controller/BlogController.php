@@ -132,7 +132,7 @@ class BlogController extends AbstractController
 
         return $this->renderForm('blog/edit.html.twig', [
             'blog' => $blog,
-            'images' => $blog->getImages(),
+            'images' => $blogRepository->getImageFiles($blog),
             'form' => $form,
         ]);
     }

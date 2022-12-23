@@ -16,7 +16,9 @@
             'blogId' : blog.id,
             'token' : csrf_token('edit-item'),
             'path' : absolute_url(path('app_home') ) ~ 'uploads/blog/image/',
-            'images' : images
+            'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
+            'images' : images,
+            'editMode' : false
         })
     }}>
     </div>

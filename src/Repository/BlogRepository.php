@@ -89,7 +89,7 @@ class BlogRepository extends ServiceEntityRepository
         $files = array();
         foreach($blog->getImages() as $image)
             if (!$image->isIsLead())
-                $files[] = $image->getFilename();
+                $files[] = [$image->getFilename(), $image->getId()];
         return $files;
     }
 

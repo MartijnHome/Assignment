@@ -11,13 +11,24 @@
     {{ text }}
   </p>
 
-  <div v-if="images" class="flex flex-wrap gap-4 mb-10">
-    <div v-for="image in images">
-      <button @click="setImage(image)">
+  <div v-if="refImages" class="flex flex-wrap gap-4 mb-10">
+    <div v-for="(image, index) in refImages" class="relative">
+      <button @click="setImage(image[0])">
         <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
-             :src="path + image"
+             :src="path + image[0]"
         >
       </button>
+      <form v-if="editMode"
+            method="post"
+            :action="deleteUrl.concat(image[1])"
+            onsubmit="return confirm('Are you sure you want to delete this item?');"
+            @submit.prevent="deleteImage(index)"
+      >
+        <input type="hidden" name="_token" :value="token">
+        <button class="absolute -top-2 -right-2 bg-red-800 text-white p-2 rounded-xl ">
+          X
+        </button>
+      </form>
     </div>
   </div>
 
@@ -40,17 +51,24 @@ export default {
     token: String,
     path: String,
     images: Array,
+    editMode: Boolean,
+    deleteUrl: String,
   },
 
   data() {
     return {
       showImage: null,
+      refImages: this.images,
     }
   },
 
   methods: {
     setImage(image) {
       this.showImage = image;
+    },
+
+    deleteImage(index) {
+      this.refImages.splice(index, 1);
     }
   }
 }
