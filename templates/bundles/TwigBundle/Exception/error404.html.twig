@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    About
+{% endblock %}
+
+{% block content %}
+    <div class="justify-center mb-10">
+        <img class="rounded-xl mx-auto mb-10"
+             src="{{ absolute_url(asset('img/error500.png')) }} ">
+        <p class="text-lg mx-auto text-center mb-10">
+            We were unable to find the page you requested.
+        </p>
+    </div>
+
+    <a href="{{ path('app_home') }}"
+       class="hover:text-amber-200"
+    >
+        <button class="bg-amber-600 text-white p-2 rounded-full m-2">
+            Go back to homepage
+        </button>
+    </a>
+{% endblock %}

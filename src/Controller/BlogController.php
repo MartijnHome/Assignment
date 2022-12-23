@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 
 #[Route('/blog')]
@@ -87,8 +88,9 @@ class BlogController extends AbstractController
     public function edit(Request $request, Blog $blog, BlogRepository $blogRepository, FileManager $fileManager, ImageRepository $imageRepository): Response
     {
         if ($this->security->getUser() !== $blog->getUser())
-            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
-                ['content-type' => 'text/plain']);
+            throw new AccessDeniedException();
+            //return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                //['content-type' => 'text/plain']);
 
         $form = $this->createForm(BlogType::class, $blog, [
             'main_image_required' => false,
