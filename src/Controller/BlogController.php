@@ -39,8 +39,9 @@ class BlogController extends AbstractController
 
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
-    public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, ImageRepository $imageRepository, Blog $blog = new Blog()): Response
+    public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, ImageRepository $imageRepository): Response
     {
+        $blog = new Blog();
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

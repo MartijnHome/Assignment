@@ -44,6 +44,7 @@ class BlogRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('blog')
                     ->orderBy('blog.publish_date', 'DESC')
+                    ->where('blog.archived = false')
                     ->setMaxResults(5)
                     ->getQuery()
                     ->getResult();
@@ -64,6 +65,7 @@ class BlogRepository extends ServiceEntityRepository
             SELECT b.id, b.title, COUNT(c.id) as num_comments
             FROM App\Entity\Blog b
             JOIN b.commentaries c
+            WHERE b.archived = false
             GROUP BY b.id
             ORDER BY num_comments DESC
          ');

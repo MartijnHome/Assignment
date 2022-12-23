@@ -1,0 +1,16 @@
+framework:
+  rate_limiter:
+    anonymous_app:
+      policy: 'sliding_window'
+      limit: 30
+      interval: '1 minute'
+
+    authenticated_app:
+      policy: 'sliding_window'
+      limit: 60
+      interval: '1 minute'
+
+    api:
+      policy: 'sliding_window'
+      limit: 60
+      interval: '1 minute'

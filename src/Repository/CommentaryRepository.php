@@ -42,6 +42,9 @@ class CommentaryRepository extends ServiceEntityRepository
     public function getLatestFive(): array
     {
         return $this->createQueryBuilder('commentary')
+            ->addSelect('blog')
+            ->leftJoin('commentary.blog', 'blog')
+            ->where('blog.archived = false')
             ->orderBy('commentary.id', 'DESC')
             ->setMaxResults(5)
             ->getQuery()

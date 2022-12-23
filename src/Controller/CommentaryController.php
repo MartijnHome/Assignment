@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Blog;
 use App\Entity\Commentary;
 use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
 use App\Repository\CommentaryRepository;
-use phpDocumentor\Reflection\Types\Integer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
