@@ -3,12 +3,6 @@
 {% block title %}Edit Blog{% endblock %}
 
 {% block content %}
-    <h1 class="text-2xl mb-10">Blog Editor</h1>
-
-    <img class="h-80 w-full rounded-2xl rounded-2xl"
-         src="{{ asset('uploads/blog/image/' ~ blog.getLead().getFilename()) }}"
-    >
-
     <div {{
     vue_component('Blog', {
         'title' : blog.title,
@@ -19,7 +13,9 @@
         'path' : absolute_url(path('app_home') ) ~ 'uploads/blog/image/',
         'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
         'images' : images,
-        'editMode' : true
+        'editMode' : true,
+        'lead' : blog.getLead().getFilename(),
+        'date' : blog.publishDate ? blog.publishDate|date('Y-m-d H:i:s') : ''
     })
     }}>
     </div>

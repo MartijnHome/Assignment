@@ -1,13 +1,23 @@
 <template>
-  <h1 class="text-2xl my-2">
-    {{ title }}
-  </h1>
+  <div class="flex items-center justify-center justify-center">
+    <h1 class="mx-auto text-5xl my-2">
+      {{ title }}
+    </h1>
+  </div>
 
-  <h2 class="text-lg my-2">
+  <p class="font-bold my-4">
+    {{ date }}
+  </p>
+
+  <h2 class="text-xl my-4">
     {{ subTitle }}
   </h2>
 
-  <p class="my-4">
+  <img class="h-80 w-full rounded-2xl rounded-2xl"
+       :src="path + lead"
+  >
+
+  <p class="my-16">
     {{ text }}
   </p>
 
@@ -32,7 +42,7 @@
     </div>
   </div>
 
-  <ImageViewer v-if="index" :path="path" :index="index" :images="refImages" @requestClose="setImage(null)" />
+  <ImageViewer v-if="index !== null" :path="path" :index="index" :images="refImages" @requestClose="setImage(null)" />
 </template>
 
 <script>
@@ -53,6 +63,8 @@ export default {
     images: Array,
     editMode: Boolean,
     deleteUrl: String,
+    lead: String,
+    date: String,
   },
 
   data() {

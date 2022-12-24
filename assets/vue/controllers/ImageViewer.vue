@@ -11,7 +11,7 @@
                        leave="ease-in duration-200"
                        leave-from="opacity-100"
                        leave-to="opacity-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+        <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" />
       </TransitionChild>
 
       <div class="fixed inset-0 z-10 overflow-y-auto">
@@ -24,7 +24,7 @@
                            leave-from="opacity-100 translate-y-0 sm:scale-100"
                            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
             <DialogPanel
-                class="relative transform overflow-hidden rounded-lg bg-white  shadow-xl transition-all sm:my-8 mx-4 sm:p-6">
+                class="relative overflow-hidden rounded-lg bg-black w-full shadow-xl transition-all m-32 sm:p-6">
 
               <div class="relative">
                 <button @click="close">
@@ -32,11 +32,11 @@
                        :src="path + images[currentIndex][0]"
                   />
                 </button>
-                <button class="absolute top-1/2 left-0 bg-red-800 text-white p-2 rounded-xl text-3xl"
+                <button class="hover:animate-pulse absolute top-1/2 left-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl align-middle -translate-y-1/2 "
                 @click="decreaseIndex">
                   ←
                 </button>
-                <button class="absolute top-1/2 right-0 bg-red-800 text-white p-2 rounded-xl text-3xl"
+                <button class="hover:animate-pulse absolute top-1/2 right-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl	align-middle -translate-y-1/2"
                 @click="increaseIndex">
                   →
                 </button>
