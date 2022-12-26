@@ -5,17 +5,11 @@
 {% block content %}
     <div {{
     vue_component('Blog', {
-        'title' : blog.title,
-        'subTitle' : blog.subTitle,
-        'text' : blog.text,
         'blogId' : blog.id,
-        'token' : csrf_token('delete'),
-        'path' : absolute_url(path('app_home') ) ~ 'uploads/blog/image/',
+        'token' : csrf_token('edit-item'),
         'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
-        'images' : images,
         'editMode' : true,
         'lead' : blog.getLead().getFilename(),
-        'date' : blog.publishDate ? blog.publishDate|date('Y-m-d H:i:s') : ''
     })
     }}>
     </div>

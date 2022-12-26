@@ -29,7 +29,7 @@
               <div class="relative">
                 <button @click="close">
                   <img class=""
-                       :src="path + images[currentIndex][0]"
+                       :src="path + '/uploads/blog/image/' + images[currentIndex][1]"
                   />
                 </button>
                 <button class="hover:animate-pulse absolute top-1/2 left-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl align-middle -translate-y-1/2 "

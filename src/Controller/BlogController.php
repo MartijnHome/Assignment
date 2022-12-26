@@ -17,11 +17,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
@@ -84,22 +87,16 @@ class BlogController extends AbstractController
             'blog' => $blog,
             'commentaries' => $blog->getCommentaries(),
             'commentary_form' => $form->createView(),
-            'images' => $blogRepository->getImageFiles($blog),
             'route' => $request->headers->get('referer'),
         ]);
     }
 
     #[Route('/api/{id}', name: 'api_blog_show', methods: ['GET'])]
-    public function apiShow(Request $request, Blog $blog): Response
+    public function showBlog(Blog $blog): Response
     {
-        $fileNames = Array();
-        foreach ($blog->getImages() as $image)
-            if (!$image->isIsLead())
-                $fileNames[] = $image->getFilename();
-
-        return $this->json([
-            'message' => $fileNames
-        ]);
+          return $this->json($blog, Response::HTTP_OK, [], [
+                AbstractNormalizer::GROUPS => ['show_blog']
+          ]);
     }
 
     #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]

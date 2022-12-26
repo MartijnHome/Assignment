@@ -10,6 +10,7 @@ use App\Service\FileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -23,6 +24,7 @@ class ImageController extends AbstractController
         $this->security = $security;
     }
 
+    /*
     #[Route('/', name: 'app_image_index', methods: ['GET'])]
     public function index(ImageRepository $imageRepository): Response
     {
@@ -75,13 +77,14 @@ class ImageController extends AbstractController
             'form' => $form,
         ]);
     }
+*/
 
-    #[Route('/{id}', name: 'api_image_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'api_image_delete', methods: ['POST'])]
     public function delete(Request $request, Image $image, ImageRepository $imageRepository): Response
     {
         $blog = $image->getBlog();
         if ($this->security->getUser() !== $blog->getUser()
-            || !$this->isCsrfTokenValid('delete', $request->request->get('_token')))
+            || !$this->isCsrfTokenValid('edit-item', json_decode($request->getContent(), true)['token']))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
 

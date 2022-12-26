@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\HasLifecycleCallbacks]
@@ -17,6 +18,7 @@ class Blog
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_blog'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'blogs')]
@@ -26,19 +28,23 @@ class Blog
     #[Assert\NotBlank]
     #[Assert\Length(min: 3)]
     #[ORM\Column(length: 255)]
+    #[Groups(['show_blog'])]
     private ?string $title = null;
 
     #[Assert\NotBlank]
     #[Assert\Length(min: 3)]
     #[ORM\Column(length: 255)]
+    #[Groups(['show_blog'])]
     private ?string $subtitle = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['show_blog'])]
     private ?\DateTimeInterface $publish_date = null;
 
     #[Assert\NotBlank]
     #[Assert\Length(min: 3)]
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['show_blog'])]
     private ?string $text = null;
 
     #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Commentary::class, orphanRemoval: true)]
@@ -49,9 +55,11 @@ class Blog
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_blog'])]
     private ?Image $lead = null;
 
     #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Image::class)]
+    #[Groups(['show_blog'])]
     private Collection $images;
 
 
