@@ -24,23 +24,26 @@
                            leave-from="opacity-100 translate-y-0 sm:scale-100"
                            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
             <DialogPanel
-                class="relative overflow-hidden rounded-lg bg-black w-full shadow-xl transition-all m-32 sm:p-6">
+                class="relative overflow-hidden rounded-lg bg-black w-full  shadow-xl transition-all m-32 sm:p-6">
+                <div class="relative">
+                  <button @click="close" class="">
+                    <img class=""
+                         :src="path + '/uploads/blog/image/' + images[currentIndex].filename"
+                    />
+                  </button>
+                  <p class="text-white">
+                    {{ images[currentIndex].description }}
+                  </p>
+                  <button class="hover:animate-pulse absolute top-1/2 left-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl align-middle -translate-y-1/2 "
+                          @click="decreaseIndex">
+                    ←
+                  </button>
+                  <button class="hover:animate-pulse absolute top-1/2 right-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl	align-middle -translate-y-1/2"
+                          @click="increaseIndex">
+                    →
+                  </button>
+                </div>
 
-              <div class="relative">
-                <button @click="close">
-                  <img class=""
-                       :src="path + '/uploads/blog/image/' + images[currentIndex][1]"
-                  />
-                </button>
-                <button class="hover:animate-pulse absolute top-1/2 left-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl align-middle -translate-y-1/2 "
-                @click="decreaseIndex">
-                  ←
-                </button>
-                <button class="hover:animate-pulse absolute top-1/2 right-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl	align-middle -translate-y-1/2"
-                @click="increaseIndex">
-                  →
-                </button>
-              </div>
             </DialogPanel>
           </TransitionChild>
         </div>
@@ -89,5 +92,9 @@ export default {
         this.currentIndex = 0;
     }
   },
+
+  created() {
+    console.log(this.images);
+  }
 }
 </script>

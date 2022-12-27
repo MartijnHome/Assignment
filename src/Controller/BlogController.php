@@ -13,18 +13,17 @@ use App\Service\FileManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
@@ -73,11 +72,9 @@ class BlogController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET'])]
-    public function show(Request $request, Blog $blog, BlogRepository $blogRepository): Response
+    public function show(Request $request, Blog $blog): Response
     {
-        $commentary = new Commentary();
-
-        $form = $this->createForm(CommentaryType::class, $commentary, array(
+        $form = $this->createForm(CommentaryType::class, new Commentary(), array(
             'action' => $this->generateUrl('app_commentary_new', array(
                 'blogId' => $blog->getId(),
             ))
@@ -88,15 +85,10 @@ class BlogController extends AbstractController
             'commentaries' => $blog->getCommentaries(),
             'commentary_form' => $form->createView(),
             'route' => $request->headers->get('referer'),
-        ]);
-    }
-
-    #[Route('/api/{id}', name: 'api_blog_show', methods: ['GET'])]
-    public function showBlog(Blog $blog): Response
-    {
-          return $this->json($blog, Response::HTTP_OK, [], [
+            'json' => $this->json($blog, Response::HTTP_OK, [], [
                 AbstractNormalizer::GROUPS => ['show_blog']
-          ]);
+            ])->getContent()
+        ]);
     }
 
     #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
@@ -124,13 +116,15 @@ class BlogController extends AbstractController
                 $imageRepository->save(new Image($blog, $fileManager->upload($image)));
 
             $blogRepository->save($blog, true);
-            return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('blog/edit.html.twig', [
             'blog' => $blog,
             'images' => $blogRepository->getImageFiles($blog),
             'form' => $form,
+            'json' => $this->json($blog, Response::HTTP_OK, [], [
+                AbstractNormalizer::GROUPS => ['show_blog']
+            ])->getContent()
         ]);
     }
 

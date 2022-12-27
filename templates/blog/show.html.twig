@@ -4,78 +4,107 @@
 
 
 {% block content %}
-    <div {{
-        vue_component('Blog', {
-            'blogId' : blog.id,
-            'token' : csrf_token('edit-item'),
-            'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
-            'editMode' : false,
-            'lead' : blog.getLead().getFilename(),
-        })
-    }}>
-    </div>
+    <div class="flex gap-4">
+        <div class="flex-grow">
+            <p> {{  blog.publishDate ? blog.publishDate|date('d F Y') : '' }}</p>
+            <div {{
+            vue_component('Blog', {
+                'token' : csrf_token('edit-item'),
+                'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
+                'editMode' : false,
+                'json' : json,
+            })
+            }}>
+            </div>
 
-    <h1 class="text-2xl mt-10 ">Comments</h1>
-    <div class="divide-y divide-amber-600">
-        {% for commentary in commentaries %}
-            <div class="flex w-full pl-16 py-2">
-                <div class="flex-none w-2/12">
-                    {{ commentary.user.name }}
+            <h1 class="text-2xl mt-10 ">Comments</h1>
+            <div class="divide-y divide-amber-600">
+                {% for commentary in commentaries %}
+                    <div class="flex w-full pl-16 py-2">
+                        <div class="flex-none w-2/12">
+                            {{ commentary.user.name }}
+                        </div>
+                        <div class="flex-none">
+                            {{ commentary.text }}
+                        </div>
+                        <div class="flex-auto">
+
+                        </div>
+                        <div class="flex">
+
+                            {% if app.user == commentary.user %}
+
+                                <a href="{{ path('app_commentary_edit', {'id': commentary.id}) }}"
+                                   class="hover:text-amber-600"
+                                >
+                                    <button class="bg-sky-800 text-white p-2 rounded-xl mx-2">
+                                        Edit
+                                    </button>
+                                </a>
+                                <form method="post"
+                                      action="{{ path('app_commentary_delete', {'id': commentary.id}) }}"
+                                      onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                    <input type="hidden" name="token" value="{{ csrf_token('delete-item') }}"/>
+                                    <button class="btn bg-red-800 text-white p-2 rounded-xl mx-2">
+                                        Delete
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    Be the first to comment this blog!
+                {% endfor %}
+            </div>
+
+            <div class="mb-10">
+                {% if app.user %}
+                    <h1 class="mt-10 text-2xl">Add your comments</h1>
+                    {{ form(commentary_form) }}
+                {% else %}
+                    <h1 class="mt-10 text-2xl">Please login to add a comment</h1>
+                    <a href="/login"
+                       class="hover:text-amber-600 ">
+                        <button class="bg-amber-800 text-white p-2 rounded-xl mx-2">
+                            Go to login page
+                        </button>
+                    </a>
+                {% endif %}
+            </div>
+
+            <div>
+                <a href="{{ route }}"
+                   class="hover:text-amber-600">
+                    <button class="bg-amber-800 text-white p-2 rounded-xl mx-2">
+                        Go back
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="flex-none w-2/6 ">
+            <div class="flex gap-4">
+                <div class="flex-none w-16 h-16 rounded-full shadow-xl py-4">
+                    <img src="{{ asset('img/avatar/1.png') }}">
                 </div>
-                <div class="flex-none">
-                    {{ commentary.text }}
-                </div>
-                <div class="flex-auto">
 
-                </div>
-                <div class="flex">
+                <div class="grow">
+                    <div class="flex flex-wrap">
+                        <div class="w-full mb-2 text-lg ">
 
-                        {% if app.user == commentary.user %}
-
-                        <a href="{{ path('app_commentary_edit', {'id': commentary.id}) }}"
-                           class="hover:text-amber-600"
-                        >
-                            <button class="bg-sky-800 text-white p-2 rounded-xl mx-2">
-                                Edit
-                            </button>
-                        </a>
-                        <form method="post"
-                              action="{{ path('app_commentary_delete', {'id': commentary.id}) }}"
-                              onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                            <input type="hidden" name="token" value="{{ csrf_token('delete-item') }}"/>
-                            <button class="btn bg-red-800 text-white p-2 rounded-xl mx-2">
-                                Delete
-                            </button>
-                        </form>
-                    {% endif %}
+                            <div class=" text-amber-600 underline font-semibold">
+                                {{ blog.user.name|trim }}
+                            </div>
+                            <div class="italic tracking-widest font-light">
+                                {{ blog.publishDate|date('d F Y') }}
+                            </div>
+                            <div class="text-slate-600 underline font-semibold">
+                                TAGS
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        {% else %}
-            Be the first to comment this blog!
-        {% endfor %}
+        </div>
     </div>
 
-    <div class="mb-10">
-        {% if app.user %}
-            <h1 class="mt-10 text-2xl">Add your comments</h1>
-            {{ form(commentary_form) }}
-        {% else %}
-            <h1 class="mt-10 text-2xl">Please login to add a comment</h1>
-            <a href="/login"
-               class="hover:text-amber-600 ">
-                <button class="bg-amber-800 text-white p-2 rounded-xl mx-2">
-                    Go to login page
-                </button>
-            </a>
-        {% endif %}
-    </div>
-
-    <div>
-        <a href="{{ route }}"
-           class="hover:text-amber-600">
-            <button class="bg-amber-800 text-white p-2 rounded-xl mx-2">
-                Go back
-            </button>
-        </a>
-    </div>
 {% endblock %}

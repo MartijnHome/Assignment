@@ -19,6 +19,7 @@ class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('/about', name: 'app_about', methods: ['GET'])]
     public function about(): Response
     {
         return $this->render('blogsite/about.html.twig');
