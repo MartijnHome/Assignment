@@ -3,14 +3,11 @@
 {% block title %}Edit Blog{% endblock %}
 
 {% block content %}
-    <p> {{  blog.publishDate ? blog.publishDate|date('d F Y') : '' }}</p>
     <div {{
     vue_component('Blog', {
-        'blogId' : blog.id,
         'token' : csrf_token('edit-item'),
         'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
         'editMode' : true,
-        'lead' : blog.getLead().getFilename(),
         'json' : json,
     })
     }}>

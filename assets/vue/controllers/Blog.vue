@@ -95,7 +95,6 @@ export default {
     for (let i = 0; i < this.blog.images.length; i++)
       if (this.blog.images[i].isLead)
         this.blog.images.splice(i, 1);
-    this.blog.text = this.parseText(this.blog.text);
   }
 }
 </script>

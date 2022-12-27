@@ -47,6 +47,14 @@ class BlogController extends AbstractController
         ]);
     }
 
+    #[Route('/user/{userId}/page/{page<[1-9]\d*>}', name: 'app_blog_user_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
+    public function showByUser(BlogRepository $blogRepository, int $page, int $userId): Response
+    {
+        return $this->render('blog/index.html.twig', [
+            'paginator' => $blogRepository->findLatestByUser($userId, $page),
+        ]);
+    }
+
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function new(Request $request, FileManager $fileManager, BlogRepository $blogRepository, ImageRepository $imageRepository): Response

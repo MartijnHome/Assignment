@@ -6,7 +6,6 @@
 {% block content %}
     <div class="flex gap-4">
         <div class="flex-grow">
-            <p> {{  blog.publishDate ? blog.publishDate|date('d F Y') : '' }}</p>
             <div {{
             vue_component('Blog', {
                 'token' : csrf_token('edit-item'),
@@ -81,27 +80,31 @@
                 </a>
             </div>
         </div>
-        <div class="flex-none w-2/6 ">
+        <div class="flex-none w-3/12 ">
             <div class="flex gap-4">
-                <div class="flex-none w-16 h-16 rounded-full shadow-xl py-4">
-                    <img src="{{ asset('img/avatar/1.png') }}">
+                <div class="flex-none w-16 h-16 rounded-full shadow-xl border-2 border-amber-600 hover:animate-pulse">
+                    <a href="{{ path('app_blog_user_paginated', {'userId': blog.user.id, 'page': 1}) }}">
+                        {% if blog.user.avatar %}
+                            <img class="h-full w-full object-cover object-center rounded-full " src="{{ asset('uploads/avatar/image/' ~ blog.user.avatar.filename) }}">
+                        {% else %}
+                            <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('img/avatar/1.png') }}">
+                        {% endif %}
+                    </a>
                 </div>
-
-                <div class="grow">
-                    <div class="flex flex-wrap">
-                        <div class="w-full mb-2 text-lg ">
-
-                            <div class=" text-amber-600 underline font-semibold">
-                                {{ blog.user.name|trim }}
-                            </div>
-                            <div class="italic tracking-widest font-light">
-                                {{ blog.publishDate|date('d F Y') }}
-                            </div>
-                            <div class="text-slate-600 underline font-semibold">
-                                TAGS
-                            </div>
-                        </div>
+                <div class="grow flex flex-wrap">
+                    <div class="w-full mb-2 text-lg text-amber-600 underline font-semibold">
+                        <a href="{{ path('app_blog_user_paginated', {'userId': blog.user.id, 'page': 1}) }}">
+                            {{ blog.user.name|trim }}
+                        </a>
                     </div>
+                </div>
+            </div>
+            <div>
+                <div class="italic tracking-widest font-light">
+                    {{ blog.publishDate|date('d F Y') }}
+                </div>
+                <div class="text-slate-600 underline font-semibold">
+                    TAGS
                 </div>
             </div>
         </div>

@@ -5,15 +5,22 @@
 {% block content %}
     {% for blog in paginator.results %}
         <div class="flex gap-8 mb-16">
-            <div class="flex-none w-32 h-32 rounded-full shadow-xl py-4">
-                <img src="{{ asset('img/avatar/' ~ loop.index ~ '.png') }}">
+            <div class="flex-none w-32 h-32 rounded-full shadow-xl border-4 border-amber-600 hover:animate-pulse">
+                <a href="{{ path('app_blog_user_paginated', {'userId': blog.user.id, 'page': 1}) }}">
+                    {% if blog.user.avatar %}
+                        <img class="h-full w-full object-cover object-center rounded-full " src="{{ asset('uploads/avatar/image/' ~ blog.user.avatar.filename) }}">
+                    {% else %}
+                        <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('img/avatar/' ~ loop.index ~ '.png') }}">
+                    {% endif %}
+                </a>
             </div>
             <div class="grow">
                 <div class="flex flex-wrap">
                     <div class="w-full mb-2 text-lg flex">
-
                             <div class=" text-amber-600 underline font-semibold">
-                                {{ blog.user.name|trim }}
+                                <a href="{{ path('app_blog_user_paginated', {'userId': blog.user.id, 'page': 1}) }}">
+                                    {{ blog.user.name|trim }}
+                                </a>
                             </div>
                             <div class="mx-2">
                                 /

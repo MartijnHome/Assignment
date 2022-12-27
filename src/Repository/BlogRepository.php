@@ -79,8 +79,16 @@ class BlogRepository extends ServiceEntityRepository
             ->orderBy('blog.publish_date', 'DESC')
             ->where('blog.archived = false')
         ;
+        return (new Paginator($qb))->paginate($page);
+    }
 
-
+    public function findLatestByUser(int $userId, int $page = 1): Paginator
+    {
+        $qb = $this->createQueryBuilder('blog')
+            ->orderBy('blog.publish_date', 'DESC')
+            ->where('blog.archived = false')
+            ->where('blog.user = ' . $userId)
+        ;
         return (new Paginator($qb))->paginate($page);
     }
 

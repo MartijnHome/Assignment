@@ -50,6 +50,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Avatar $avatar = null;
+
     public function __construct()
     {
         $this->blogs = new ArrayCollection();
@@ -212,5 +215,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString() {
         return $this->name;
+    }
+
+    public function getAvatar(): ?Avatar
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?Avatar $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 }

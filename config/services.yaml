@@ -24,7 +24,8 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     App\Service\FileManager:
-        $blogimage_directory: '%kernel.project_dir%/public/uploads/blog/image'
+        $blogDirectory: '%kernel.project_dir%/public/uploads/blog/image'
+        $avatarDirectory: '%kernel.project_dir%/public/uploads/avatar/image'
 
     App\Doctrine\BlogListener:
         tags:
