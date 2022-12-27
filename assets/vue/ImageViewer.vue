@@ -92,9 +92,5 @@ export default {
         this.currentIndex = 0;
     }
   },
-
-  created() {
-    console.log(this.images);
-  }
 }
 </script>

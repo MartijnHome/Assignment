@@ -4,13 +4,11 @@
 
 
 {% block content %}
-    <div class="flex gap-4">
+    <div class="flex gap-8">
         <div class="flex-grow">
             <div {{
             vue_component('Blog', {
                 'token' : csrf_token('edit-item'),
-                'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
-                'editMode' : false,
                 'json' : json,
             })
             }}>
@@ -82,14 +80,12 @@
         </div>
         <div class="flex-none w-3/12 ">
             <div class="flex gap-4">
-                <div class="flex-none w-16 h-16 rounded-full shadow-xl border-2 border-amber-600 hover:animate-pulse">
-                    <a href="{{ path('app_blog_user_paginated', {'userId': blog.user.id, 'page': 1}) }}">
+                <div class="flex-none w-16 h-16 rounded-full shadow-xl border-2 border-amber-600">
                         {% if blog.user.avatar %}
                             <img class="h-full w-full object-cover object-center rounded-full " src="{{ asset('uploads/avatar/image/' ~ blog.user.avatar.filename) }}">
                         {% else %}
-                            <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('img/avatar/1.png') }}">
+                            <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('img/avatar/' ~ blog.user.id % 4 ~'.png') }}">
                         {% endif %}
-                    </a>
                 </div>
                 <div class="grow flex flex-wrap">
                     <div class="w-full mb-2 text-lg text-amber-600 underline font-semibold">
@@ -99,14 +95,16 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="my-4 w-full bg-amber-600 h-px">
+            </div>
                 <div class="italic tracking-widest font-light">
-                    {{ blog.publishDate|date('d F Y') }}
+                    {{ blog.publishDate|date('d F Y') }} • {{ blog.publishDate|date('g:i') }}
                 </div>
+            <div class="my-4 w-full bg-amber-600 h-px">
+            </div>
                 <div class="text-slate-600 underline font-semibold">
                     TAGS
                 </div>
-            </div>
         </div>
     </div>
 

@@ -30,6 +30,7 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.7",
         "axios": "^1.2.1",
+        "vue-sanitize": "^0.2.2",
         "vue-template-compiler": "^2.7.14"
     }
 }

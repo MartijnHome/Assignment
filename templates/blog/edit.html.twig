@@ -4,10 +4,9 @@
 
 {% block content %}
     <div {{
-    vue_component('Blog', {
+    vue_component('Editor', {
         'token' : csrf_token('edit-item'),
         'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
-        'editMode' : true,
         'json' : json,
     })
     }}>
