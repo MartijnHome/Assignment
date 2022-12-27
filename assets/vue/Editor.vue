@@ -31,26 +31,26 @@
     </div>
   </div>
 
-    <div v-if="blog.images" class="flex flex-wrap gap-4 mb-10">
-      <div v-for="(image, index) in blog.images" class="relative">
-        <button @click="setImage(index)">
-          <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
-               :src="url + '/uploads/blog/image/' + image.filename"
-          >
-        </button>
-        <form method="post"
-              @submit.prevent="deleteImage(index)"
+  <div v-if="blog.images" class="flex flex-wrap gap-4 mb-10">
+    <div v-for="(image, index) in blog.images" class="relative">
+      <button @click="setImage(index)">
+        <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
+             :src="url + '/uploads/blog/image/' + image.filename"
         >
-          <input type="hidden" name="token" :value="token">
-          <button class="absolute -top-2 -right-2 bg-red-800 text-white p-2 rounded-xl ">
-            X
-          </button>
-        </form>
-        <div class="absolute -top-2 -left-2 bg-white p-2 rounded-xl ">
-          {{ image.id }}
-        </div>
+      </button>
+      <form method="post"
+            @submit.prevent="deleteImage(index)"
+      >
+        <input type="hidden" name="token" :value="token">
+        <button class="absolute -top-2 -right-2 bg-red-800 text-white p-2 rounded-xl ">
+          X
+        </button>
+      </form>
+      <div class="absolute -top-2 -left-2 bg-white p-2 rounded-xl ">
+        {{ image.id }}
       </div>
     </div>
+  </div>
 
     <ImageViewer v-if="index !== null"
                  :path="url"

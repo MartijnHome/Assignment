@@ -62,6 +62,12 @@ class Blog
     #[Groups(['show_blog'])]
     private Collection $images;
 
+    #[ORM\Column]
+    private ?int $style = null;
+
+    #[ORM\Column]
+    private ?bool $gallery = null;
+
 
     public function __construct()
     {
@@ -222,5 +228,29 @@ class Blog
     public function getImages(): Collection
     {
         return $this->images;
+    }
+
+    public function getStyle(): ?int
+    {
+        return $this->style;
+    }
+
+    public function setStyle(int $style): self
+    {
+        $this->style = $style;
+
+        return $this;
+    }
+
+    public function isGallery(): ?bool
+    {
+        return $this->gallery;
+    }
+
+    public function setGallery(bool $gallery): self
+    {
+        $this->gallery = $gallery;
+
+        return $this;
     }
 }

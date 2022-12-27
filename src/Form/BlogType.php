@@ -2,8 +2,12 @@
 
 namespace App\Form;
 
+use App\Config\BlogStyle;
 use App\Entity\Blog;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,6 +22,14 @@ class BlogType extends AbstractType
             ->add('title')
             ->add('subtitle')
             ->add('text')
+            ->add('style', EnumType::class, [
+                'class' => BlogStyle::class,
+                'choice_label' => fn ($choice) => match ($choice) {
+                    BlogStyle::Default => 'Default style',
+                    BlogStyle::TitleInsideLead => 'Place title on top of lead image',
+                    BlogStyle::LeadOnTop  => 'Place lead image on top of page',
+                },
+            ])
             ->add('main_image', FileType::class, [
                 'label' => $options['main_image_label'],
                 'mapped' => false,
@@ -48,7 +60,20 @@ class BlogType extends AbstractType
                         ])
                     ])
                 ],
-            ]);
+            ])
+            ->add('gallery', CheckboxType::class, [
+                'label'    => 'Show additional images at the bottom as a image gallery',
+                'required' => true,
+            ])
+            ->get('style')
+                ->addModelTransformer(new CallbackTransformer(
+                    function ($intAsEnum) {
+                        return BlogStyle::cases()[$intAsEnum];
+                    },
+                    function ($enumAsInt) {
+                        return $enumAsInt->value;
+                    }
+                ));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
