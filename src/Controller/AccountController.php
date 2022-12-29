@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Avatar;
 use App\Form\AvatarType;
+use App\Form\UserType;
 use App\Repository\AvatarRepository;
 use App\Repository\BlogRepository;
+use App\Repository\UserRepository;
 use App\Service\FileManager;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -26,7 +28,7 @@ class AccountController extends AbstractController
     }
 
     #[Route('/login', name: 'app_login')]
-    public function index(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -48,21 +50,37 @@ class AccountController extends AbstractController
     public function accountPage(Request $request, AvatarRepository $avatarRepository, FileManager $fileManager): Response
     {
         $user = $this->security->getUser();
+
+        return $this->render('blogsite/account.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/account/profile', name: 'app_profile', methods: ['GET', 'POST'])]
+    #[IsGranted('IS_AUTHENTICATED')]
+    public function profilePage(Request $request, AvatarRepository $avatarRepository, UserRepository $userRepository, FileManager $fileManager): Response
+    {
+        $user = $this->security->getUser();
+
         $avatar = new Avatar();
-        $form = $this->createForm(AvatarType::class, $avatar);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $avatarForm = $this->createForm(AvatarType::class, $avatar);
+        $avatarForm->handleRequest($request);
+        if ($avatarForm->isSubmitted() && $avatarForm->isValid()) {
             $avatar->setUser($user);
-            $avatar->setFilename($fileManager->upload($form->get('avatar')->getData(), 1));
+            $avatar->setFilename($fileManager->upload($avatarForm->get('avatar')->getData(), 1));
             $avatarRepository->save($avatar, true);
         }
 
-        return $this->render('blogsite/account.html.twig', [
-            'name' => $user->getName(),
-            'avatar' => $user->getAvatar(),
-            'blogs' => $user->getBlogs(),
-            'commentaries' => $user->getCommentaries(),
-            'form' => $form->createView(),
+        $userForm = $this->createForm(UserType::class, $user);
+        $userForm->handleRequest($request);
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+           $userRepository->save($user, true);
+        }
+
+        return $this->render('blogsite/profile.html.twig', [
+            'avatarForm' => $avatarForm->createView(),
+            'userForm' => $userForm->createView(),
+            'user' => $user,
         ]);
     }
 }

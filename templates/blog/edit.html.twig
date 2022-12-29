@@ -5,7 +5,7 @@
 {% block content %}
     <div {{
     vue_component('Editor', {
-        'token' : csrf_token('edit-item'),
+        'deleteImageToken' : csrf_token('delete-image-blog-' ~ blog.id),
         'deleteUrl' : absolute_url(path('api_image_delete', { 'id' : 0})),
         'json' : json,
     })

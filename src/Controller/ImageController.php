@@ -80,7 +80,7 @@ class ImageController extends AbstractController
     {
         $blog = $image->getBlog();
         if ($this->security->getUser() !== $blog->getUser()
-            || !$this->isCsrfTokenValid('edit-item', json_decode($request->getContent(), true)['token']))
+            || !$this->isCsrfTokenValid('delete-image-blog-' . $blog->getId(), json_decode($request->getContent(), true)['token']))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
 

@@ -20,19 +20,22 @@
         Please log in using your blogsite account.
     </p>
 
-    <form action="{{ path('app_login') }}"
-          method="post"
-          class="my-2"
-    >
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}">
+    <div class="flex">
+        <form action="{{ path('app_login') }}"
+              method="post"
+              class="my-2 w-full"
+        >
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <label for="username" class="w-full">Email</label>
+            <input type="text" required="required" id="username" name="_username" class="w-full my-2" value="{{ last_username }}">
+            <label for="password" class="w-full">Password</label>
+            <input type="password" required="required" id="password" class="w-full my-2" name="_password">
+            <button class="bg-amber-600 text-white p-2 rounded-full">
+                Login
+            </button>
+        </form>
+    </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
-
-        <button type="submit">login</button>
-    </form>
 
     <button class="text-white bg-amber-600 rounded-full p-2">
         <a href="/register">

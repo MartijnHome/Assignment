@@ -155,7 +155,7 @@ class BlogController extends AbstractController
     public function delete(Request $request, Blog $blog, BlogRepository $blogRepository, ManagerRegistry $doctrine): Response
     {
         if ($this->security->getUser() !== $blog->getUser()
-            || !$this->isCsrfTokenValid('delete-item', $request->request->get('token')))
+            || !$this->isCsrfTokenValid('delete-blog-' . $blog->getId(), $request->request->get('token')))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
 

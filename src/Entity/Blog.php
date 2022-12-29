@@ -63,9 +63,11 @@ class Blog
     private Collection $images;
 
     #[ORM\Column]
+    #[Groups(['show_blog'])]
     private ?int $style = null;
 
     #[ORM\Column]
+    #[Groups(['show_blog'])]
     private ?bool $gallery = null;
 
 
