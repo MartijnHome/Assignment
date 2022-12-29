@@ -15,28 +15,30 @@
     </div>
     <div>
         {{ form_start(avatarForm) }}
-        <button class="btn bg-amber-600 text-white p-2 rounded-xl m-2">
-            Submit
-        </button>
+            {{ form_rest(avatarForm) }}
+            <button class="btn bg-amber-600 text-white p-2 rounded-xl m-2">
+                Submit
+            </button>
         {{ form_end(avatarForm) }}
     </div>
-    <a href="{{ path('app_account') }}"
-       class="hover:text-amber-200"
-    >
-        <button class="bg-amber-600 text-white p-2 rounded-full m-2 mb-10">
-            Go back to account page
-        </button>
-    </a>
     <h2 class="text-xl mb-10">
         Profile:
     </h2>
     {{ form_start(userForm) }}
-    {{ form_rest(userForm) }}
-    <button class="btn bg-amber-600 text-white p-2 rounded-xl">
-        Submit
-    </button>
+        {{ form_rest(userForm) }}
+        <button class="btn bg-amber-600 text-white p-2 rounded-xl">
+            Submit
+        </button>
     {{ form_end(userForm) }}
     <div class="w-full">
         {{ user.biography }}
     </div>
+    <a href="{{ path('app_account') }}"
+       class="hover:text-amber-200"
+    >
+        <button class="bg-amber-600 text-white p-2 rounded-xl m-2 mb-10 flex">
+            <p>⮜</p>
+            <p class="ml-2 font-bold">Go back to account page</p>
+        </button>
+    </a>
 {% endblock %}

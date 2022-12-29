@@ -34,14 +34,14 @@
                     <div class="flex h-auto w-8/12 mx-auto shadow-2xl ">
                         <div class="flex-none my-2 z-50">
                             <a href="/"
-                                    {% if app.request.get('_route') == 'app_blogsite_home' %}
+                                    {% if app.request.get('_route') == 'app_home' %}
                                         class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
                                     {% endif %}
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
                                 HOME
                             </a>
                             <a href="/about"
-                                    {% if app.request.get('_route') == 'app_blogsite_about' %}
+                                    {% if app.request.get('_route') == 'app_about' %}
                                         class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl"
                                     {% endif %}
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">
