@@ -10,6 +10,9 @@
             vue_component('Blog', {
                 'token' : csrf_token('edit-item'),
                 'json' : json,
+                'userId' : (app.user) ? app.user.id : 0,
+                'deleteCommentaryToken' : csrf_token('delete-commentary-blog-' ~ blog.id),
+                'deleteUrl' : absolute_url(path('api_commentary_delete', { 'id' : 0})),
             })
             }}>
             </div>

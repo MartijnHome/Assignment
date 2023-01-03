@@ -48,38 +48,37 @@ class CommentaryController extends AbstractController
             ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_commentary_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'api_commentary_edit', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function edit(Request $request, Commentary $commentary, CommentaryRepository $commentaryRepository): Response
     {
-        if ($this->security->getUser() !== $commentary->getUser())
+        $blog = $commentary->getBlog();
+        if ($this->security->getUser() !== $commentary->getUser()
+            || !$this->isCsrfTokenValid('delete-commentary-blog-' . $blog->getId(), json_decode($request->getContent(), true)['token']))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
 
-        $form = $this->createForm(CommentaryType::class, $commentary);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $commentaryRepository->save($commentary, true);
-            return $this->redirectToRoute('app_blog_show', ['id' => $commentary->getBlog()->getId()]);
-        }
-
-        return $this->renderForm('commentary/edit.html.twig', [
-            'commentary' => $commentary,
-            'form' => $form,
-            'route' => $request->headers->get('referer'),
+        $commentary->setText(json_decode($request->getContent(), true)['commentary-text']);
+        $commentaryRepository->save($commentary, true);
+        return $this->json([
+            'message' => 'Comment edited',
         ]);
     }
 
-    #[Route('/{id}', name: 'app_commentary_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'api_commentary_delete', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function delete(Request $request, Commentary $commentary, CommentaryRepository $commentaryRepository): Response
     {
+        $blog = $commentary->getBlog();
         if ($this->security->getUser() !== $commentary->getUser()
-            || !$this->isCsrfTokenValid('delete-item', $request->request->get('token')))
+            || !$this->isCsrfTokenValid('delete-commentary-blog-' . $blog->getId(), json_decode($request->getContent(), true)['token']))
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
 
         $commentaryRepository->remove($commentary, true);
-        return $this->redirect($request->headers->get('referer'));
+
+        return $this->json([
+            'message' => 'Comment deleted',
+        ]);
     }
 }

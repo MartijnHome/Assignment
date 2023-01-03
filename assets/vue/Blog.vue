@@ -82,7 +82,11 @@
                  @requestClose="setImage(null)"
     />
   <h1 class="text-2xl mt-10 ">Comments</h1>
-    <Commentaries :blog-id="blog.id"/>
+    <Commentaries :blog-id="blog.id"
+                  :user-id="userId"
+                  :delete-url="deleteUrl"
+                  :delete-commentary-token="deleteCommentaryToken"
+    />
 </template>
 
 
@@ -105,6 +109,9 @@ export default {
   props: {
     token: String,
     json: String,
+    userId: Number,
+    deleteCommentaryToken: String,
+    deleteUrl: String,
   },
 
   data() {
@@ -149,6 +156,8 @@ export default {
     for (let i = 0; i < this.blog.images.length; i++)
       if (this.blog.images[i].isLead)
         this.blog.images.splice(i, 1);
+
+    console.log(this.userId);
   }
 }
 </script>
