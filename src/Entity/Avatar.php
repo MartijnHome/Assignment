@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AvatarRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AvatarRepository::class)]
 class Avatar
@@ -14,6 +15,7 @@ class Avatar
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_commentary'])]
     private ?string $filename = null;
 
     #[ORM\OneToOne(mappedBy: 'avatar', cascade: ['persist', 'remove'])]

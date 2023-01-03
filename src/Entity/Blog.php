@@ -23,6 +23,7 @@ class Blog
 
     #[ORM\ManyToOne(inversedBy: 'blogs')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_blog'])]
     private ?User $user = null;
 
     #[Assert\NotBlank]

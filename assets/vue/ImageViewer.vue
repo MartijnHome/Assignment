@@ -60,6 +60,8 @@ const open = ref(true)
 
 <script>
 export default {
+  name: "ImageViewer",
+
   props: {
     index: Number,
     images: Array,

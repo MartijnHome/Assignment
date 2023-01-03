@@ -6,12 +6,14 @@ use App\Entity\Commentary;
 use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
 use App\Repository\CommentaryRepository;
+use App\Service\FileManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[Route('/commentary')]
 class CommentaryController extends AbstractController
@@ -37,6 +39,14 @@ class CommentaryController extends AbstractController
         return $this->redirect($request->headers->get('referer'));
     }
 
+    #[Route('/blog/{blogId}', name: 'api_commentary_blog', methods: ['GET'])]
+    public function showFromBlog(BlogRepository $blogRepository, String $blogId, FileManager $fileManager): Response
+    {
+        return $this->json(['commentaries' => $blogRepository->find($blogId)->getCommentaries(), 'avatarDirectory' => 'uploads/avatar/image'],
+            Response::HTTP_OK, [], [
+                AbstractNormalizer::GROUPS => ['show_commentary']
+            ]);
+    }
 
     #[Route('/{id}/edit', name: 'app_commentary_edit', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED')]

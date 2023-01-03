@@ -102,6 +102,8 @@ const STYLE_TITLEONTOP = 1;
 const STYLE_LEADONTOP = 2;
 
 export default {
+  name: "Editor",
+
   components: {
     ImageViewer,
   },

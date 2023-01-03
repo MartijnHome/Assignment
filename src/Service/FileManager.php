@@ -10,6 +10,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Config\TwigExtra\StringConfig;
 
 class FileManager
 {
@@ -65,5 +66,4 @@ class FileManager
             $fileNames[] = $image->getFilename();
         return $fileNames;
     }
-
 }

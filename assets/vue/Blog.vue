@@ -81,20 +81,24 @@
                  :images="blog.images"
                  @requestClose="setImage(null)"
     />
+  <h1 class="text-2xl mt-10 ">Comments</h1>
+    <Commentaries :blog-id="blog.id"/>
 </template>
 
 
 <script>
 import ImageViewer from "./ImageViewer.vue";
+import Commentaries from "./Commentaries.vue";
 
 const STYLE_DEFAULT = 0;
 const STYLE_TITLEONTOP = 1;
 const STYLE_LEADONTOP = 2;
 
 export default {
-
+  name: "Blog",
 
   components: {
+    Commentaries,
     ImageViewer,
   },
 

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CommentaryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentaryRepository::class)]
@@ -12,10 +13,12 @@ class Commentary
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_commentary'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaries')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_commentary'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaries')]
@@ -25,6 +28,7 @@ class Commentary
     #[Assert\NotBlank]
     #[Assert\Length(min: 3)]
     #[ORM\Column(length: 255)]
+    #[Groups(['show_commentary'])]
     private ?string $text = null;
 
     /**

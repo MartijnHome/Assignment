@@ -82,6 +82,14 @@ class BlogController extends AbstractController
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET'])]
     public function show(Request $request, Blog $blog): Response
     {
+        $json = $this->serializer->serialize($blog, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::IGNORED_ATTRIBUTES =>
+                ['password', 'blogs', 'commentaries', 'roles', 'email', 'userIdentifier', 'location'],
+        ]);
+
         $form = $this->createForm(CommentaryType::class, new Commentary(), array(
             'action' => $this->generateUrl('app_commentary_new', array(
                 'blogId' => $blog->getId(),
@@ -93,9 +101,7 @@ class BlogController extends AbstractController
             'commentaries' => $blog->getCommentaries(),
             'commentary_form' => $form->createView(),
             'route' => $request->headers->get('referer'),
-            'json' => $this->json($blog, Response::HTTP_OK, [], [
-                AbstractNormalizer::GROUPS => ['show_blog']
-            ])->getContent()
+            'json' => $json,
         ]);
     }
 
