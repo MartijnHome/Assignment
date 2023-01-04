@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CommentaryRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,6 +31,10 @@ class Commentary
     #[ORM\Column(length: 255)]
     #[Groups(['show_commentary'])]
     private ?string $text = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['show_commentary'])]
+    private ?\DateTimeInterface $date = null;
 
     /**
      * @param Blog|null $blog
@@ -76,6 +81,18 @@ class Commentary
     public function setText(string $text): self
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
 
         return $this;
     }

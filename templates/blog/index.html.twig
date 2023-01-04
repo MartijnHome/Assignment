@@ -29,9 +29,13 @@
                             <div class="mx-2 font-light">
                                 in
                             </div>
-                            <div class="text-slate-600 underline font-semibold">
-                                TAGS
-                            </div>
+                            {% for blogtag in blog.getBlogtags() %}
+                                <div class="text-slate-600 underline font-semibold mr-2">
+                                    <a href="{{ path('app_blog_tag_paginated', {'blogtagId': blogtag.id, 'page': 1}) }}">
+                                        {{ blogtag.name }}
+                                    </a>
+                                </div>
+                            {% endfor %}
                     </div>
                     <div class="h-max">
                         <a href="{{ path('app_blog_show', {'id': blog.id}) }}"

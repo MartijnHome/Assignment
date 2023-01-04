@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Blog;
+use App\Entity\Blogtag;
 use App\Entity\Commentary;
 use App\Entity\Image;
 use App\Form\BlogType;
 use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
+use App\Repository\BlogtagRepository;
 use App\Repository\ImageRepository;
 use App\Service\FileManager;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,7 +42,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/page/{page<[1-9]\d*>}', name: 'app_blog_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
-    public function paginated(BlogRepository $blogRepository, int $page): Response
+    public function index(BlogRepository $blogRepository, int $page): Response
     {
         return $this->render('blog/index.html.twig', [
             'paginator' => $blogRepository->findLatest($page),
@@ -48,10 +50,19 @@ class BlogController extends AbstractController
     }
 
     #[Route('/user/{userId}/page/{page<[1-9]\d*>}', name: 'app_blog_user_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
-    public function showByUser(BlogRepository $blogRepository, int $page, int $userId): Response
+    public function indexByUser(BlogRepository $blogRepository, int $page, int $userId): Response
     {
         return $this->render('blog/index.html.twig', [
             'paginator' => $blogRepository->findLatestByUser($userId, $page),
+        ]);
+    }
+
+    #[Route('/blogtag/{blogtagId}/page/{page<[1-9]\d*>}', name: 'app_blog_tag_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
+    public function indexByTag(BlogRepository $blogRepository, int $page, int $blogtagId): Response
+    {
+
+        return $this->render('blog/index.html.twig', [
+            'paginator' => $blogRepository->findLatestByTag($blogtagId, $page),
         ]);
     }
 
@@ -90,16 +101,8 @@ class BlogController extends AbstractController
                 ['password', 'blogs', 'commentaries', 'roles', 'email', 'userIdentifier', 'location'],
         ]);
 
-        $form = $this->createForm(CommentaryType::class, new Commentary(), array(
-            'action' => $this->generateUrl('app_commentary_new', array(
-                'blogId' => $blog->getId(),
-            ))
-        ));
-
         return $this->render('blog/show.html.twig', [
             'blog' => $blog,
-            'commentaries' => $blog->getCommentaries(),
-            'commentary_form' => $form->createView(),
             'route' => $request->headers->get('referer'),
             'json' => $json,
         ]);

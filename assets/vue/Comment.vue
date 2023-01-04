@@ -1,15 +1,29 @@
 <template>
   <div class="flex-none w-16">
     <div class="flex-none w-16 h-16 rounded-full shadow-xl border-2 border-amber-600">
-      <img class="h-full w-full object-cover object-center rounded-full "
+      <img v-if="comment.user.avatar" class="h-full w-full object-cover object-center rounded-full "
            :src="avatarDirectory.concat(comment.user.avatar.filename)"
       >
     </div>
   </div>
 
   <div class="flex-auto w-64">
-    <div class="flex-none text-lg text-amber-600  font-semibold">
-      {{ comment.user.name }}
+    <div class="flex-none ">
+      <div class="flex text-lg ">
+        <div class="text-amber-600 font-semibold">
+          {{ comment.user.name }}
+        </div>
+        <div class="italic tracking-widest font-light ml-6">
+          {{ new Date(comment.date).toDateString() }}
+        </div>
+        <div class="mx-2">
+          •
+        </div>
+        <div class="italic tracking-widest font-light">
+          {{ new Date(comment.date).getUTCHours() }}:{{ (new Date(comment.date).getUTCMinutes() < 10) ? '0'.concat(new Date(comment.date).getUTCMinutes().toString()) : new Date(comment.date).getUTCMinutes() }}
+        </div>
+      </div>
+
     </div>
     <div class="flex-none my-2">
 
@@ -121,12 +135,15 @@ export default {
 
     setCommentaryEditNotification() {
       this.editValid = false;
+
       if (this.editCommentaryText.length < 3)
       {
         this.editCommentaryNotification = "Comment should contain at least 3 characters!"
         return;
       }
+
       this.editCommentaryNotification = (255 - this.editCommentaryText.length) + " characters remaining.";
+
       if (255 - this.editCommentaryText.length >= 0)
         this.editValid = true;
     },

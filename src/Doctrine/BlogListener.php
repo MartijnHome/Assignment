@@ -28,12 +28,9 @@ class BlogListener
 
     public function prePersist(Blog $blog, LifecycleEventArgs $event): void
     {
-        // Publish Date
         $datetime = new DateTime('now');
         $datetime->setTimezone(new DateTimeZone('Europe/Amsterdam'));
         $blog->setPublishDate($datetime);
-
-        // User
         $blog->setUser($this->security->getUser());
     }
 

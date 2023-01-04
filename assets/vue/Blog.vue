@@ -62,7 +62,7 @@
             <p class="text-sm text-amber-600">{{ blog.images[index].description }}</p>
           </div>
         </div>
-        </div>
+      </div>
     </div>
 
     <div v-if="blog.images && blog.gallery" class="flex flex-wrap gap-4 mb-10 z-0">
@@ -78,10 +78,10 @@
     <ImageViewer v-if="index !== null"
                  :path="url"
                  :index="index"
-                 :images="blog.images"
+                 :images="this.blog.images"
                  @requestClose="setImage(null)"
     />
-  <h1 class="text-2xl mt-10 ">Comments</h1>
+  <h1 class="text-2xl mt-10 mb-4">Comments</h1>
     <Commentaries :blog-id="blog.id"
                   :user-id="userId"
                   :delete-url="deleteUrl"
@@ -156,8 +156,6 @@ export default {
     for (let i = 0; i < this.blog.images.length; i++)
       if (this.blog.images[i].isLead)
         this.blog.images.splice(i, 1);
-
-    console.log(this.userId);
   }
 }
 </script>

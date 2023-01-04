@@ -26,17 +26,22 @@ class CommentaryController extends AbstractController
     }
 
 
-    #[Route('/new/{blogId}', name: 'app_commentary_new', methods: ['POST'])]
+    #[Route('/{blogId}/new', name: 'api_commentary_new', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function new(Request $request, BlogRepository $blogRepository, CommentaryRepository $commentaryRepository, String $blogId): Response
     {
-        $commentary = new Commentary($blogRepository->find($blogId));
+        $blog = $blogRepository->find($blogId);
+        if (!$this->isCsrfTokenValid('delete-commentary-blog-' . $blog->getId(), json_decode($request->getContent(), true)['token']))
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
 
-        $form = $this->createForm(CommentaryType::class, $commentary)->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-            $commentaryRepository->save($commentary, true);
+        $commentary = new Commentary($blog);
+        $commentary->setText(json_decode($request->getContent(), true)['commentary-text']);
+        $commentaryRepository->save($commentary, true);
 
-        return $this->redirect($request->headers->get('referer'));
+        return $this->json([
+            'message' => 'Comment edited',
+        ]);
     }
 
     #[Route('/blog/{blogId}', name: 'api_commentary_blog', methods: ['GET'])]

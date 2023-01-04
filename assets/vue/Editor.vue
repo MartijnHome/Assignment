@@ -73,7 +73,7 @@
       <form method="post"
             @submit.prevent="deleteImage(index)"
       >
-        <input type="hidden" name="token" :value="token">
+        <input type="hidden" name="token" :value="deleteImageToken">
         <button class="absolute -top-2 -right-2 bg-red-800 text-white p-2 rounded-xl ">
           X
         </button>
@@ -90,12 +90,15 @@
                  :images="blog.images"
                  @requestClose="setImage(null)"
     />
+
+  <BlogTagHandler :blog-id="blog.id"/>
 </template>
 
 
 <script>
 import ImageViewer from "./ImageViewer.vue";
 import axios from "axios";
+import BlogTagHandler from "./BlogTagHandler.vue";
 
 const STYLE_DEFAULT = 0;
 const STYLE_TITLEONTOP = 1;
@@ -105,6 +108,7 @@ export default {
   name: "Editor",
 
   components: {
+    BlogTagHandler,
     ImageViewer,
   },
 

@@ -71,12 +71,16 @@ class Blog
     #[Groups(['show_blog'])]
     private ?bool $gallery = null;
 
+    #[ORM\ManyToMany(targetEntity: Blogtag::class, mappedBy: 'blogs')]
+    private Collection $blogtags;
+
 
     public function __construct()
     {
         $this->commentaries = new ArrayCollection();
         $this->archived = false;
         $this->images = new ArrayCollection();
+        $this->blogtags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -253,6 +257,33 @@ class Blog
     public function setGallery(bool $gallery): self
     {
         $this->gallery = $gallery;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Blogtag>
+     */
+    public function getBlogtags(): Collection
+    {
+        return $this->blogtags;
+    }
+
+    public function addBlogtag(Blogtag $blogtag): self
+    {
+        if (!$this->blogtags->contains($blogtag)) {
+            $this->blogtags->add($blogtag);
+            $blogtag->addBlog($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlogtag(Blogtag $blogtag): self
+    {
+        if ($this->blogtags->removeElement($blogtag)) {
+            $blogtag->removeBlog($this);
+        }
 
         return $this;
     }

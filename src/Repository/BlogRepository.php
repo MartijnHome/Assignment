@@ -92,6 +92,18 @@ class BlogRepository extends ServiceEntityRepository
         return (new Paginator($qb))->paginate($page);
     }
 
+    public function findLatestByTag(int $blogtagId, int $page = 1): Paginator
+    {
+        $qb = $this->createQueryBuilder('blog')
+            ->orderBy('blog.publish_date', 'DESC')
+            ->where('blog.archived = false')
+            ->leftJoin('blog.blogtags', 't')
+            ->andWhere(':tag MEMBER OF blog.blogtags')
+            ->setParameter('tag', $blogtagId);
+        ;
+        return (new Paginator($qb))->paginate($page);
+    }
+
     public function getImageFiles(Blog $blog): array
     {
         $files = array();

@@ -17,25 +17,10 @@
             }}>
             </div>
 
-            <div class="mb-10">
-                {% if app.user %}
-                    <h1 class="mt-10 text-2xl">Add your comments</h1>
-                    {{ form(commentary_form) }}
-                {% else %}
-                    <h1 class="mt-10 text-2xl">Please login to add a comment</h1>
-                    <a href="/login"
-                       class="hover:text-amber-600 ">
-                        <button class="bg-amber-800 text-white p-2 rounded-xl">
-                            Go to login page
-                        </button>
-                    </a>
-                {% endif %}
-            </div>
-
             <div>
                 <a href="{{ route }}"
                    class="hover:text-amber-600">
-                    <button class="bg-amber-800 text-white p-2 rounded-xl">
+                    <button class="bg-amber-800 text-white p-2 rounded-xl mt-6">
                         Go back
                     </button>
                 </a>
@@ -69,9 +54,13 @@
                 </div>
             <div class="my-4 w-full bg-amber-600 h-px">
             </div>
-                <div class="text-slate-600 underline font-semibold">
-                    TAGS
+            {% for blogtag in blog.getBlogtags() %}
+                <div class="text-slate-600 underline font-semibold mr-2">
+                    <a href="{{ path('app_blog_tag_paginated', {'blogtagId': blogtag.id, 'page': 1}) }}">
+                        {{ blogtag.name }}
+                    </a>
                 </div>
+            {% endfor %}
         </div>
     </div>
 
