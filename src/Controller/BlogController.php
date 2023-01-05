@@ -11,6 +11,7 @@ use App\Form\CommentaryType;
 use App\Repository\BlogRepository;
 use App\Repository\BlogtagRepository;
 use App\Repository\ImageRepository;
+use App\Repository\UserRepository;
 use App\Service\FileManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -46,23 +47,26 @@ class BlogController extends AbstractController
     {
         return $this->render('blog/index.html.twig', [
             'paginator' => $blogRepository->findLatest($page),
+            'pageTitle' => "Showing all blogs",
         ]);
     }
 
     #[Route('/user/{userId}/page/{page<[1-9]\d*>}', name: 'app_blog_user_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
-    public function indexByUser(BlogRepository $blogRepository, int $page, int $userId): Response
+    public function indexByUser(BlogRepository $blogRepository, UserRepository $userRepository, int $page, int $userId): Response
     {
         return $this->render('blog/index.html.twig', [
             'paginator' => $blogRepository->findLatestByUser($userId, $page),
+            'pageTitle' => "Showing all blogs by user " . $userRepository->find($userId)->getName(),
         ]);
     }
 
     #[Route('/blogtag/{blogtagId}/page/{page<[1-9]\d*>}', name: 'app_blog_tag_paginated', defaults: ['_format' => 'html'], methods: ['GET'])]
-    public function indexByTag(BlogRepository $blogRepository, int $page, int $blogtagId): Response
+    public function indexByTag(BlogRepository $blogRepository, BlogtagRepository $blogtagRepository, int $page, int $blogtagId): Response
     {
 
         return $this->render('blog/index.html.twig', [
             'paginator' => $blogRepository->findLatestByTag($blogtagId, $page),
+            'pageTitle' => "Showing all blogs with tag " . $blogtagRepository->find($blogtagId)->getName(),
         ]);
     }
 

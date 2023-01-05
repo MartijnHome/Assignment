@@ -3,13 +3,16 @@
 {% block title %}Blog index{% endblock %}
 
 {% block content %}
+    <h1 class="text-2xl mb-8">
+        {{ pageTitle }}
+    </h1>
     {% for blog in paginator.results %}
         <div class="flex gap-8 mb-16">
             <div class="flex-none w-32 h-32 rounded-full shadow-xl border-4 border-amber-600">
                     {% if blog.user.avatar %}
                         <img class="h-full w-full object-cover object-center rounded-full " src="{{ asset('uploads/avatar/image/' ~ blog.user.avatar.filename) }}">
                     {% else %}
-                        <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('img/avatar/' ~ blog.user.id % 4 ~ '.png') }}">
+                        <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('img/avatar/' ~ (blog.user.id % 3 + 1)  ~ '.png') }}">
                     {% endif %}
             </div>
             <div class="grow">

@@ -153,7 +153,7 @@ export default {
     parseText() {
       let split = this.blog.text.split('~');
       if (split.length % 2 === 0) {
-        this.paragraphs.push("Something went wrong during loading");
+        this.paragraphs.push("Something went wrong during loading, missing an ~ tag");
         return;
       }
       for (let i = 0; i < split.length; i++)

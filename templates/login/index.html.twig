@@ -5,20 +5,20 @@
 {% endblock %}
 
 {% block content %}
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        <div>
-            <p>
-                Did you verify your account?
-            </p>
-        </div>
-    {% endif %}
-
     <h1 class="text-xl my-2">Log in</h1>
 
     <p class="my-2">
         Please log in using your blogsite account.
     </p>
+
+    {% if error %}
+        <div>
+            <p class="text-xl text-red-600">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+                Did you verify your account?
+            </p>
+        </div>
+    {% endif %}
 
     <div class="flex">
         <form action="{{ path('app_login') }}"

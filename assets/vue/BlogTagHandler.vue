@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full border border-black">
+  <div class="w-full">
     <h1 class="text-2xl block">
       Tags
     </h1>
@@ -7,15 +7,15 @@
       Tags on your blog posts can make it easier for readers to find what they're looking for. They can help search engine crawlers understand the content that's on your blog.
       You can add an existing tag by clicking on it, or create a new one by filling out the text field and pressing the add button.
     </p>
-    <div class="my-4">
+    <div class="my-2">
       Your blog currently has these tags:
     </div>
-    <div class="">
+    <div class="my-2">
       <button v-for="(tag, index) in currentTags" @click="unsetTag(tag.id, index)" class="mx-2 text-white p-2 rounded-xl bg-red-800">
         {{ tag.name }}
       </button>
       </div>
-    <div>
+    <div class="my-2">
       Add new tag:
       <input v-model="name" class="border border-black p-2"/>
 

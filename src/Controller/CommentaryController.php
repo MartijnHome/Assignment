@@ -47,7 +47,7 @@ class CommentaryController extends AbstractController
     #[Route('/blog/{blogId}', name: 'api_commentary_blog', methods: ['GET'])]
     public function showFromBlog(BlogRepository $blogRepository, String $blogId, FileManager $fileManager): Response
     {
-        return $this->json(['commentaries' => $blogRepository->find($blogId)->getCommentaries(), 'avatarDirectory' => 'uploads/avatar/image'],
+        return $this->json(['commentaries' => $blogRepository->find($blogId)->getCommentaries(), 'avatarDirectory' => 'uploads/avatar/image', 'publicAvatarDirectory' => 'img/avatar'],
             Response::HTTP_OK, [], [
                 AbstractNormalizer::GROUPS => ['show_commentary']
             ]);

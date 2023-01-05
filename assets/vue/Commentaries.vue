@@ -36,6 +36,7 @@
       <div v-for="(comment, index) in commentaries" class="flex w-full py-2 gap-4 mt-8">
         <Comment :comment="comment"
                  :avatar-directory="avatarDirectory"
+                 :public-avatar-directory="publicAvatarDirectory"
                  :user-id="userId"
                  :index="index"
                  :delete-commentary-token="deleteCommentaryToken"
@@ -68,6 +69,7 @@
         commentaries: null,
         url: location.origin,
         avatarDirectory: null,
+        publicAvatarDirectory: null,
         text: "",
         valid: false,
         editCommentaryNotification: null,
@@ -83,6 +85,7 @@
             .get(this.url + "/commentary/blog/" + this.blogId)
             .then((res) => {
               this.avatarDirectory = this.url + "/" + res.data.avatarDirectory + "/";
+              this.publicAvatarDirectory = this.url + "/" + res.data.publicAvatarDirectory + "/";
               this.commentaries = res.data.commentaries.sort(function(a,b){
                 return new Date(b.date) - new Date(a.date);
               });

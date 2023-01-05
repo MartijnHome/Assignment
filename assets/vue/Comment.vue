@@ -4,6 +4,9 @@
       <img v-if="comment.user.avatar" class="h-full w-full object-cover object-center rounded-full "
            :src="avatarDirectory.concat(comment.user.avatar.filename)"
       >
+      <img v-else class="h-full w-full object-cover object-center rounded-full "
+           :src="publicAvatarDirectory.concat(((comment.user.id % 3) + 1).toString() + '.png')"
+      >
     </div>
   </div>
 
@@ -74,6 +77,7 @@ export default {
   props: {
     comment: Object,
     avatarDirectory: String,
+    publicAvatarDirectory: String,
     userId: Number,
     index: Number,
     deleteCommentaryToken: String,
