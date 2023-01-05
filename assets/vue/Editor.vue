@@ -88,10 +88,11 @@
                  :path="url"
                  :index="index"
                  :images="blog.images"
+                 :edit-mode="true"
                  @requestClose="setImage(null)"
     />
 
-  <BlogTagHandler :blog-id="blog.id"/>
+  <BlogTagHandler :blog-id="blog.id" :blog-tags="blog.blogtags"/>
 </template>
 
 

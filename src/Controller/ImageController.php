@@ -74,6 +74,16 @@ class ImageController extends AbstractController
         ]);
     }
 */
+    #[Route('/edit/{id}', name: 'api_image_edit', methods: ['POST'])]
+    public function edit(Request $request, Image $image, ImageRepository $imageRepository): Response
+    {
+        $description = json_decode($request->getContent(), true)['description'];
+        $image->setDescription($description);
+        $imageRepository->save($image, true);
+        return $this->json([
+            'message' => 'Image description changed',
+        ]);
+    }
 
     #[Route('/delete/{id}', name: 'api_image_delete', methods: ['POST'])]
     public function delete(Request $request, Image $image, ImageRepository $imageRepository): Response

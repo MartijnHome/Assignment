@@ -14,12 +14,8 @@ class RateLimiterSubscriber implements EventSubscriberInterface {
     private RateLimiterFactory $apiLimiter;
     private TokenStorageInterface $tokenStorage;
 
-    public function __construct(
-        TokenStorageInterface $tokenStorage,
-        RateLimiterFactory $anonymousAppLimiter,
-        RateLimiterFactory $authenticatedAppLimiter,
-        RateLimiterFactory $apiLimiter,
-    ) {
+    public function __construct(TokenStorageInterface $tokenStorage, RateLimiterFactory $anonymousAppLimiter, RateLimiterFactory $authenticatedAppLimiter, RateLimiterFactory $apiLimiter)
+    {
         $this->tokenStorage = $tokenStorage;
         $this->anonymousAppLimiter = $anonymousAppLimiter;
         $this->authenticatedAppLimiter = $authenticatedAppLimiter;

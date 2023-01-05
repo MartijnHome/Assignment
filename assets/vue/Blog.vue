@@ -79,6 +79,7 @@
                  :path="url"
                  :index="index"
                  :images="this.blog.images"
+                 :edit-mode="false"
                  @requestClose="setImage(null)"
     />
   <h1 class="text-2xl mt-10 mb-4">Comments</h1>

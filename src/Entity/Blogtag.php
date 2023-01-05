@@ -14,11 +14,11 @@ class Blogtag
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['show_blogtag'])]
+    #[Groups(['show_blogtag', 'show_blog'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['show_blogtag'])]
+    #[Groups(['show_blogtag', 'show_blog'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Blog::class, inversedBy: 'blogtags')]

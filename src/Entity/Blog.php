@@ -65,13 +65,14 @@ class Blog
 
     #[ORM\Column]
     #[Groups(['show_blog'])]
-    private ?int $style = null;
+    private ?int $style = 0;
 
     #[ORM\Column]
     #[Groups(['show_blog'])]
     private ?bool $gallery = null;
 
     #[ORM\ManyToMany(targetEntity: Blogtag::class, mappedBy: 'blogs')]
+    #[Groups(['show_blog'])]
     private Collection $blogtags;
 
 

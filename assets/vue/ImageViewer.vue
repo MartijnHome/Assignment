@@ -31,9 +31,19 @@
                          :src="path + '/uploads/blog/image/' + images[currentIndex].filename"
                     />
                   </button>
-                  <p class="text-white">
-                    {{ images[currentIndex].description }}
-                  </p>
+                  <div v-if="editMode">
+                    <textarea v-model="text">
+                    </textarea>
+                    <button class="bg-amber-600 text-white p-2 rounded-xl" @click="atSetDescription">
+                      Set description
+                    </button>
+                  </div>
+                  <div v-else>
+                    <p class="text-white">
+                      {{ images[currentIndex].description }}
+                    </p>
+                  </div>
+
                   <button class="hover:animate-pulse absolute top-1/2 left-0 bg-black border-slate-400 border-2 text-white p-2 rounded-full w-20 h-20 text-3xl align-middle -translate-y-1/2 "
                           @click="decreaseIndex">
                     ←
@@ -59,6 +69,8 @@ const open = ref(true)
 </script>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "ImageViewer",
 
@@ -66,18 +78,36 @@ export default {
     index: Number,
     images: Array,
     path: String,
+    editMode: Boolean,
   },
 
   data() {
     return {
       currentIndex: this.index,
+      text: "",
+      url: location.origin,
     }
   },
 
+  created() {
+    this.text = this.images[this.currentIndex].description;
+  },
+
   methods: {
+    atSetDescription()
+    {
+      axios
+          .post(this.url + "/image/edit/" + this.images[this.currentIndex].id, {
+            'description': (this.text.length > 0) ? this.text : null,
+          })
+          .then((res) => {
+            this.images[this.currentIndex].description = this.text;
+          })
+    },
+
     close()
     {
-      this.$emit('requestClose')
+      this.$emit('requestClose');
     },
 
     decreaseIndex()
@@ -85,6 +115,7 @@ export default {
       this.currentIndex -= 1;
       if (this.currentIndex < 0)
         this.currentIndex = this.images.length - 1;
+      this.text = this.images[this.currentIndex].description;
     },
 
     increaseIndex()
@@ -92,6 +123,7 @@ export default {
       this.currentIndex += 1;
       if (this.currentIndex === this.images.length)
         this.currentIndex = 0;
+      this.text = this.images[this.currentIndex].description;
     }
   },
 }
