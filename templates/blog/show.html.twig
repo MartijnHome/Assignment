@@ -18,10 +18,10 @@
             </div>
 
             <div>
-                <a href="{{ route }}"
-                   class="hover:text-amber-600">
-                    <button class="bg-amber-800 text-white p-2 rounded-xl mt-6">
-                        Go back
+                <a href="{{ route }}">
+                    <button class="bg-amber-600 text-white p-2 rounded-xl mt-6 flex">
+                        <p>⮜</p>
+                        <p class="ml-2 font-bold">Go back</p>
                     </button>
                 </a>
             </div>
@@ -50,7 +50,7 @@
             <div class="my-4 w-full bg-amber-600 h-px">
             </div>
                 <div class="italic tracking-widest font-light">
-                    {{ blog.publishDate|date('d F Y') }} • {{ blog.publishDate|date('g:i') }}
+                    {{ blog.publishDate|date('d F Y') }} • {{ blog.publishDate|date('H:m') }}
                 </div>
             <div class="my-4 w-full bg-amber-600 h-px">
             </div>

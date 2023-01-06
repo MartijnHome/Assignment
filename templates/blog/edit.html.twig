@@ -3,6 +3,14 @@
 {% block title %}Edit Blog{% endblock %}
 
 {% block content %}
+    <h1 class="text-3xl mb-4">Blog Editor</h1>
+    <p class="mb-10">
+        Below is a preview of your blog. Make changes by changing the forms or click on additional images to add descriptions to them.
+        You can also remove images by clicking on the red cross in the top corner of them. Additional images can be placed inline by putting their ID numbers, shown
+        at the left top corner of the image, between two ~ symbols. (eg. ~1~ would inline image with ID 1).
+
+    </p>
+
     <div {{
     vue_component('Editor', {
         'deleteImageToken' : csrf_token('delete-image-blog-' ~ blog.id),

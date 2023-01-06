@@ -144,7 +144,12 @@ export default {
             .post(this.deleteUrl.concat(this.blog.images[index].id), {
               'token': this.deleteImageToken
             })
-            .then((res) => this.blog.images.splice(index, 1))
+            .then((res) => {
+              for (let i = 0; i < this.inlineImages.length; i++)
+                if (this.inlineImages[i] === this.blog.images[index].id)
+                  this.inlineImages.splice(i, 1);
+              this.blog.images.splice(index, 1);
+            })
             .catch((e) => {
               console.log("oops");
             });

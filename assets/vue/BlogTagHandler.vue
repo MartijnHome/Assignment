@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <h1 class="text-2xl block">
+    <h1 class="text-2xl block mb-4">
       Tags
     </h1>
     <p>
@@ -15,7 +15,7 @@
         {{ tag.name }}
       </button>
       </div>
-    <div class="my-2">
+    <div class="mt-2 mb-10">
       Add new tag:
       <input v-model="name" class="border border-black p-2"/>
 

@@ -16,7 +16,7 @@
         <a href="{{ path('app_profile') }}"
            class="hover:text-amber-200"
         >
-            <button class="bg-amber-600 text-white p-2 rounded-full my-4 mb-10">
+            <button class="bg-amber-600 text-white p-2 rounded-xl my-4 mb-10">
                 Go to profile
             </button>
         </a>
@@ -25,17 +25,24 @@
         <h1 class="text-2xl mb-10">
             Welcome {{ user.name }}
         </h1>
-        <a href="{{ path('app_blog_new') }}"
-           class="hover:text-amber-200"
-        >
-            <button class="bg-amber-600 text-white p-2 rounded-full m-2 mb-10">
-                Create new blog
-            </button>
-        </a>
 
-        <h2 class="text-xl mb-10">
-            Your blogs
-        </h2>
+        <div class="flex">
+            <div class="flex-none">
+                <h2 class="text-xl">
+                    These are your blogs:
+                </h2>
+            </div>
+            <div class="flex-auto"></div>
+            <div class="flex-none">
+                <a href="{{ path('app_blog_new') }}"
+                   class="hover:text-amber-200"
+                >
+                    <button class="bg-amber-600 text-white p-2 rounded-xl m-2">
+                        + Create new blog
+                    </button>
+                </a>
+            </div>
+        </div>
 
         <table class="w-full table-fixed border-2 border-black shadow-2xl mb-2">
             <tr class="bg-slate-600 text-white py-2">

@@ -82,7 +82,7 @@ class BlogType extends AbstractType
             'data_class' => Blog::class,
             'main_image_required' => true,
             'main_image_label' => "Main image (banner)",
-            'additional_images_label' => "Additional images"
+            'additional_images_label' => "Optional - Additional images"
         ]);
     }
 }

@@ -85,7 +85,7 @@ class BlogController extends AbstractController
                 $imageRepository->save(new Image($blog, $fileManager->upload($image)));
 
             $blogRepository->save($blog, true);
-            return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('blog/new.html.twig', [

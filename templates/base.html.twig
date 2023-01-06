@@ -48,7 +48,11 @@
                                 ABOUT
                             </a>
                             <a href="/blog/page/1"
-                                    {% if app.request.get('_route') == 'app_blog_paginated' %}
+                                    {% if app.request.get('_route') == 'app_blog_paginated'
+                                        or app.request.get('_route') == 'app_blog_user_paginated'
+                                        or app.request.get('_route') == 'app_blog_tag_paginated'
+                                        or app.request.get('_route') == 'app_blog_show'
+                                    %}
                                         class="bg-amber-600 hover:bg-amber-600 text-white font-bold p-2 mr-px  text-xl"
                                     {% endif %}
                                class="hover:bg-amber-600 text-white font-bold p-2 mr-px text-xl">

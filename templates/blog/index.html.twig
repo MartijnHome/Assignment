@@ -3,6 +3,17 @@
 {% block title %}Blog index{% endblock %}
 
 {% block content %}
+    {% if app.request.get('_route') == 'app_blog_user_paginated'
+        or app.request.get('_route') == 'app_blog_tag_paginated'
+    %}
+        <a href="/blog/page/1">
+            <button class="bg-amber-600 text-white p-2 rounded-xl mb-4 flex">
+                <p>⮜</p>
+                <p class="ml-2 font-bold">Show all blogs</p>
+            </button>
+        </a>
+    {% endif %}
+
     <h1 class="text-2xl mb-8">
         {{ pageTitle }}
     </h1>
@@ -29,9 +40,11 @@
                             <div class="italic tracking-widest font-light">
                                 {{ blog.publishDate|date('d F Y') }}
                             </div>
-                            <div class="mx-2 font-light">
-                                in
-                            </div>
+                            {% if blog.getBlogtags().empty() == false %}
+                                <div class="mx-2 font-light">
+                                    in
+                                </div>
+                            {% endif %}
                             {% for blogtag in blog.getBlogtags() %}
                                 <div class="text-slate-600 underline font-semibold mr-2">
                                     <a href="{{ path('app_blog_tag_paginated', {'blogtagId': blogtag.id, 'page': 1}) }}">
