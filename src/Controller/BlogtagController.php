@@ -93,6 +93,7 @@ class BlogtagController extends AbstractController
         if ($this->security->getUser() !== $blog->getUser())
             return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
+
         $blogtag = $blogtagRepository->find($blogtagId);
         $blogtag->removeBlog($blogRepository->find($blogId));
         $blogtagRepository->save($blogtag, true);

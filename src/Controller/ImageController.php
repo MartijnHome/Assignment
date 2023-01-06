@@ -77,6 +77,10 @@ class ImageController extends AbstractController
     #[Route('/edit/{id}', name: 'api_image_edit', methods: ['POST'])]
     public function edit(Request $request, Image $image, ImageRepository $imageRepository): Response
     {
+        if ($this->security->getUser() !== $image->getBlog()->getUser())
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
+
         $description = json_decode($request->getContent(), true)['description'];
         $image->setDescription($description);
         $imageRepository->save($image, true);
