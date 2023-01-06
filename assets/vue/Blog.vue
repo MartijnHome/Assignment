@@ -46,23 +46,22 @@
   </template>
 
   <div v-for="(p, index) in paragraphs">
-    <p class="my-8 w-full">
+    <p class="my-16 w-full">
       {{ p }}
     </p>
-    <div v-if="index < inlineImages.length" class="flex ">
-      <div class="relative justify-center text-center w-full">
-        <button @click="setImage(index)">
-          <div class="w-80 ">
-            <img class="mx-auto rounded-2xl hover:animate-pulse"
-                 :src="url + '/uploads/blog/image/' + blog.images[index].filename"
-            >
-          </div>
+    <div v-if="index < inlineImages.length" class="flex">
+      <div  class="relative justify-center text-center w-full">
+        <button @click="setImage(inlineImages[index])">
+          <img class="w-80 rounded-2xl hover:animate-pulse"
+               :src="url + '/uploads/blog/image/' + blog.images[inlineImages[index]].filename"
+          >
         </button>
-        <div v-if="blog.images[index].description" class="justify-center mt-2 mx-32">
-          <p class="text-xs text-amber-800">{{ blog.images[index].description }}</p>
+        <div v-if="blog.images[inlineImages[index]].description" class="justify-center mt-2 mx-32">
+          <p class="text-xs text-amber-800">{{ blog.images[inlineImages[index]].description }}</p>
         </div>
       </div>
     </div>
+
   </div>
 
   <div v-if="blog.images && blog.gallery" class="flex flex-wrap gap-4 mb-10 z-0">
@@ -137,17 +136,16 @@ export default {
     parseText() {
       let split = this.blog.text.split('~');
       if (split.length % 2 === 0) {
-        this.paragraphs.push("Something went wrong during loading");
+        this.paragraphs.push("Something went wrong during loading, missing an ~ tag");
         return;
       }
-
       for (let i = 0; i < split.length; i++)
         if (i % 2 === 0)
           this.paragraphs.push(split[i]);
         else
           for (let j = 0, id = parseInt(split[i]); j < this.blog.images.length; j++)
             if (this.blog.images[j].id === id)
-              this.inlineImages.push(id);
+              this.inlineImages.push(j-1);
     }
   },
 

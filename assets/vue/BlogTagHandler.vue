@@ -5,7 +5,7 @@
     </h1>
     <p>
       Tags on your blog posts can make it easier for readers to find what they're looking for. They can help search engine crawlers understand the content that's on your blog.
-      You can add an existing tag by clicking on it, or create a new one by filling out the text field and pressing the add button.
+      You can remove an existing tag by clicking on it, or create a new one by filling out the text field and pressing the add button.
     </p>
     <div class="my-2">
       Your blog currently has these tags:
@@ -79,7 +79,7 @@ export default {
             this.currentTags.push({id: res.data.tag[0], name: res.data.tag[1]});
           })
           .catch((err) => {
-            this.error = "Tag " + this.name + " already exists!"
+            this.error = err.response.data;
           });
     },
 

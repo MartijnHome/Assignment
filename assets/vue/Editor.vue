@@ -51,13 +51,13 @@
     </p>
     <div v-if="index < inlineImages.length" class="flex">
       <div  class="relative justify-center text-center w-full">
-        <button @click="setImage(index)">
-          <img class="w-64 h-64 rounded-2xl hover:animate-pulse"
-               :src="url + '/uploads/blog/image/' + blog.images[index].filename"
+        <button @click="setImage(inlineImages[index])">
+          <img class="w-80 rounded-2xl hover:animate-pulse"
+               :src="url + '/uploads/blog/image/' + blog.images[inlineImages[index]].filename"
           >
         </button>
-        <div v-if="blog.images[index].description" class="justify-center mt-2 mx-32">
-          <p class="text-xs text-amber-800">{{ blog.images[index].description }}</p>
+        <div v-if="blog.images[inlineImages[index]].description" class="justify-center mt-2 mx-32">
+          <p class="text-xs text-amber-800">{{ blog.images[inlineImages[index]].description }}</p>
         </div>
       </div>
     </div>
@@ -146,7 +146,7 @@ export default {
             })
             .then((res) => {
               for (let i = 0; i < this.inlineImages.length; i++)
-                if (this.inlineImages[i] === this.blog.images[index].id)
+                if (this.inlineImages[i] === index)
                   this.inlineImages.splice(i, 1);
               this.blog.images.splice(index, 1);
             })
@@ -167,7 +167,7 @@ export default {
         else
           for (let j = 0, id = parseInt(split[i]); j < this.blog.images.length; j++)
             if (this.blog.images[j].id === id)
-              this.inlineImages.push(id);
+              this.inlineImages.push(j-1);
     }
   },
 
