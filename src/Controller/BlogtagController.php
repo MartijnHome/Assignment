@@ -39,8 +39,12 @@ class BlogtagController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function new(Request $request, BlogRepository $blogRepository, BlogtagRepository $blogtagRepository, int $blogId): Response
     {
-        $name = strtoupper(json_decode($request->getContent(), true)['blogtag-name']);
+        $blog = $blogRepository->find($blogId);
+        if ($this->security->getUser() !== $blog->getUser())
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
 
+        $name = strtoupper(json_decode($request->getContent(), true)['blogtag-name']);
         $blogtag = $blogtagRepository->findOneBy(array('name' => $name));
         if ($blogtag)
             return $this->forward('App\Controller\BlogtagController::addTagToBlog', [
@@ -50,7 +54,7 @@ class BlogtagController extends AbstractController
 
         $blogtag = new BlogTag();
         $blogtag->setName($name);
-        $blogtag->addBlog($blogRepository->find($blogId));
+        $blogtag->addBlog($blog);
         $blogtagRepository->save($blogtag, true);
 
         return $this->json([
@@ -63,8 +67,12 @@ class BlogtagController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function addTagToBlog(BlogRepository $blogRepository, BlogtagRepository $blogtagRepository, int $blogtagId, int $blogId): Response
     {
-        $blogtag = $blogtagRepository->find($blogtagId);
         $blog = $blogRepository->find($blogId);
+        if ($this->security->getUser() !== $blog->getUser())
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
+
+        $blogtag = $blogtagRepository->find($blogtagId);
         if ($blogtag->getBlogs()->contains($blog))
             return new Response('Duplicate tag', Response::HTTP_BAD_REQUEST,
                 ['content-type' => 'text/plain']);
@@ -81,6 +89,11 @@ class BlogtagController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED')]
     public function removeTagFromBlog(BlogRepository $blogRepository, BlogtagRepository $blogtagRepository, int $blogtagId, int $blogId): Response
     {
+        $blog = $blogRepository->find($blogId);
+        if ($this->security->getUser() !== $blog->getUser())
+            return new Response('Operation not allowed', Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']);
+
         $blogtag = $blogtagRepository->find($blogtagId);
         $blogtag->removeBlog($blogRepository->find($blogId));
         $blogtagRepository->save($blogtag, true);
