@@ -27,7 +27,7 @@
                 class="relative overflow-hidden rounded-lg bg-black w-full  shadow-xl transition-all m-32 sm:p-6">
                 <div class="relative">
                   <button @click="close" class="">
-                    <img class=""
+                    <img class="max-h-[32rem]"
                          :src="path + '/uploads/blog/image/' + images[currentIndex].filename"
                     />
                   </button>

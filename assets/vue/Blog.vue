@@ -45,49 +45,49 @@
     </h2>
   </template>
 
-    <div v-for="(p, index) in paragraphs">
-      <p class="my-8 w-full">
-        {{ p }}
-      </p>
-      <div v-if="index < inlineImages.length" class="flex ">
-        <div class="relative justify-center text-center w-full">
-          <button @click="setImage(index)">
-            <div class="w-80 ">
-              <img class="mx-auto rounded-2xl hover:animate-pulse"
-                   :src="url + '/uploads/blog/image/' + blog.images[index].filename"
-              >
-            </div>
-          </button>
-          <div v-if="blog.images[index].description" class="justify-center mt-2">
-            <p class="text-sm text-amber-600">{{ blog.images[index].description }}</p>
+  <div v-for="(p, index) in paragraphs">
+    <p class="my-8 w-full">
+      {{ p }}
+    </p>
+    <div v-if="index < inlineImages.length" class="flex ">
+      <div class="relative justify-center text-center w-full">
+        <button @click="setImage(index)">
+          <div class="w-80 ">
+            <img class="mx-auto rounded-2xl hover:animate-pulse"
+                 :src="url + '/uploads/blog/image/' + blog.images[index].filename"
+            >
           </div>
+        </button>
+        <div v-if="blog.images[index].description" class="justify-center mt-2 mx-32">
+          <p class="text-xs text-amber-800">{{ blog.images[index].description }}</p>
         </div>
       </div>
     </div>
+  </div>
 
-    <div v-if="blog.images && blog.gallery" class="flex flex-wrap gap-4 mb-10 z-0">
-      <div v-for="(image, index) in blog.images" class="relative">
-        <button @click="setImage(index)">
-          <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
-               :src="url + '/uploads/blog/image/' + image.filename"
-          >
-        </button>
-      </div>
+  <div v-if="blog.images && blog.gallery" class="flex flex-wrap gap-4 mb-10 z-0">
+    <div v-for="(image, index) in blog.images" class="relative">
+      <button @click="setImage(index)">
+        <img class="w-32 h-32 rounded-2xl hover:animate-pulse"
+             :src="url + '/uploads/blog/image/' + image.filename"
+        >
+      </button>
     </div>
+  </div>
 
-    <ImageViewer v-if="index !== null"
-                 :path="url"
-                 :index="index"
-                 :images="this.blog.images"
-                 :edit-mode="false"
-                 @requestClose="setImage(null)"
-    />
+  <ImageViewer v-if="index !== null"
+               :path="url"
+               :index="index"
+               :images="this.blog.images"
+               :edit-mode="false"
+               @requestClose="setImage(null)"
+  />
   <h1 class="text-2xl mt-10 mb-4">Comments</h1>
-    <Commentaries :blog-id="blog.id"
-                  :user-id="userId"
-                  :delete-url="deleteUrl"
-                  :delete-commentary-token="deleteCommentaryToken"
-    />
+  <Commentaries :blog-id="blog.id"
+                :user-id="userId"
+                :delete-url="deleteUrl"
+                :delete-commentary-token="deleteCommentaryToken"
+  />
 </template>
 
 

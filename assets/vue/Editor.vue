@@ -56,8 +56,8 @@
                :src="url + '/uploads/blog/image/' + blog.images[index].filename"
           >
         </button>
-        <div v-if="blog.images[index].description" class="justify-center mt-2">
-          <p class="text-sm text-amber-600">{{ blog.images[index].description }}</p>
+        <div v-if="blog.images[index].description" class="justify-center mt-2 mx-32">
+          <p class="text-xs text-amber-800">{{ blog.images[index].description }}</p>
         </div>
       </div>
     </div>

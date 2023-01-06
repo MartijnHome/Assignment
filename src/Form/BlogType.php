@@ -63,7 +63,7 @@ class BlogType extends AbstractType
             ])
             ->add('gallery', CheckboxType::class, [
                 'label'    => 'Show additional images at the bottom as a image gallery',
-                'required' => true,
+                'required' => false,
             ])
             ->get('style')
                 ->addModelTransformer(new CallbackTransformer(

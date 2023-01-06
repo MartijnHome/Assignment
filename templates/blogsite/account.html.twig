@@ -9,7 +9,7 @@
             {% if user.avatar %}
                 <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('uploads/avatar/image/' ~ user.avatar.filename) }}">
             {% else %}
-                <img src="{{ asset('img/avatar/1.png') }}">
+                <img class="h-full w-full object-cover object-center rounded-full" src="{{ asset('img/avatar/' ~ (user.id % 3 + 1)  ~ '.png') }}">
             {% endif %}
         </div>
 
