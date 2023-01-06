@@ -60,6 +60,6 @@ The example database has three users. These are their credentials:
         b@b.nl / testtest
     </li>
     <li>
-        m@test.nl / testtest
+        c@c.nl / testtest
     </li>
 </ul>
